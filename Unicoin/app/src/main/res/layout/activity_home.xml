@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="r2zzb4.unicoin.HomeActivity">
+    tools:context="vajnatimi.unicoin.HomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

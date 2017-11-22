@@ -1,4 +1,4 @@
-package r2zzb4.unicoin.model;
+package vajnatimi.unicoin.model;
 
 import com.orm.SugarRecord;
 import java.security.Timestamp;

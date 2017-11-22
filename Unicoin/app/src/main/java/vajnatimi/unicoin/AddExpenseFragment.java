@@ -1,11 +1,8 @@
-package r2zzb4.unicoin;
+package vajnatimi.unicoin;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +10,6 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-
-import java.security.Timestamp;
-
-import r2zzb4.unicoin.model.Expense;
 
 public class AddExpenseFragment extends DialogFragment{
     private EditText etItemName;

@@ -1,4 +1,4 @@
-package r2zzb4.unicoin;
+package vajnatimi.unicoin;
 
 import android.app.Dialog;
 import android.graphics.drawable.ColorDrawable;
@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 public class TransactionTypeFragment extends DialogFragment{

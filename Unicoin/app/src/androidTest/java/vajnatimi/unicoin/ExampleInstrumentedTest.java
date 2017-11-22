@@ -1,4 +1,4 @@
-package r2zzb4.unicoin;
+package vajnatimi.unicoin;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

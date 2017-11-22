@@ -1,4 +1,4 @@
-package r2zzb4.unicoin;
+package vajnatimi.unicoin;
 
 import org.junit.Test;
 
