@@ -1,8 +1,12 @@
 package vajnatimi.unicoin;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +15,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import vajnatimi.unicoin.model.Expense;
+
 public class AddExpenseFragment extends DialogFragment{
+    private static final String TITLE = "Add expense";
+
     private EditText etItemName;
     private EditText etPrice;
     private EditText etDate;
@@ -20,10 +28,10 @@ public class AddExpenseFragment extends DialogFragment{
 
     public AddExpenseFragment(){}
 
-    public static AddExpenseFragment newInstance(String title) {
+    public static AddExpenseFragment newInstance() {
         AddExpenseFragment frag = new AddExpenseFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
+        //args.putString("title", title);
         frag.setArguments(args);
         return frag;
     }
@@ -47,22 +55,19 @@ public class AddExpenseFragment extends DialogFragment{
         // Fetch arguments from bundle and set title
         //String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle(R.string.add_expense);
-
-        etItemName.requestFocus();
-        getDialog().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
 //    @Override
 //    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        String title = getArguments().getString("title");
+//        String title = getArguments().getString(TITLE);
 //        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
 //        alertDialogBuilder.setTitle(title);
 //        alertDialogBuilder.setPositiveButton(R.string.ok,  new DialogInterface.OnClickListener() {
 //            @Override
 //            public void onClick(DialogInterface dialog, int which) {
-//                //// TODO: 2017. 11. 21.
-//                Expense expense = new Expense(etItemName.getText(), etPrice.getText(), Timestamp,0);
+//                //// TODO: add expense
+//                //Expense expense = new Expense(etItemName.getText(), etPrice.getText(), 0);
+//                Log.i("mt", "CLICK: Positive Button");
 //            }
 //        });
 //        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

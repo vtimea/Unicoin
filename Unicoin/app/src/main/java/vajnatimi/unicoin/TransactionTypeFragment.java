@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import android.widget.Button;
 public class TransactionTypeFragment extends DialogFragment{
     private Button btnExpense;
     private Button btnIncome;
+
+    public interface TransactionTypeListener{
+        void onFinishChoosing(String transactionType);
+    }
 
     public TransactionTypeFragment(){}
 
@@ -36,6 +41,24 @@ public class TransactionTypeFragment extends DialogFragment{
 
         btnExpense = (Button) view.findViewById(R.id.btnExpense);
         btnIncome = (Button) view.findViewById(R.id.btnIncome);
+
+        btnExpense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionTypeListener listener = (TransactionTypeListener) getActivity();
+                listener.onFinishChoosing(btnExpense.getText().toString());
+                dismiss();
+            }
+        });
+
+        btnIncome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TransactionTypeListener listener = (TransactionTypeListener) getActivity();
+                listener.onFinishChoosing(btnIncome.getText().toString());
+                dismiss();
+            }
+        });
 
     }
 

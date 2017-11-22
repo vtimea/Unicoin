@@ -1,15 +1,18 @@
 package vajnatimi.unicoin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,21 @@ public class HomeActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
         transactionTypeFragment.show(fm, "fragment_transaction_type");
-        //TODO: return expense vs income?
+    }
+
+    private void showAddExpenseDialog(){
+        FragmentManager fm = getSupportFragmentManager();
+        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
+        addExpenseFragment.show(fm, "fragment_add_expense");
+        Log.i("mt", "showAddExpenseDialog");
+    }
+
+    private void showAddIncomeDialog(){
+        //TODO: Add income dialog
+        Toast.makeText(getApplicationContext(), "Add income még nincs kész!", Toast.LENGTH_SHORT);
+        //FragmentManager fm = getSupportFragmentManager();
+        //TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
+        //transactionTypeFragment.show(fm, "fragment_add_income");
     }
 
     @Override
@@ -54,5 +71,14 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFinishChoosing(String transactionType) {
+        if(transactionType.equals(getString(R.string.expense))){
+            showAddExpenseDialog();
+        } else if(transactionType.equals(getString(R.string.income))){
+            showAddIncomeDialog();
+        }
     }
 }
