@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     private void showAddExpenseDialog(){
         FragmentManager fm = getSupportFragmentManager();
         AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
-        addExpenseFragment.show(fm, "fragment_add_expense");
+        addExpenseFragment.show(fm, "dialog_add_expense");
         Log.i("mt", "showAddExpenseDialog");
     }
 

@@ -2,6 +2,7 @@ package vajnatimi.unicoin;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.media.MediaCodec;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -10,12 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-
-import vajnatimi.unicoin.model.Expense;
+import android.widget.Toast;
 
 public class AddExpenseFragment extends DialogFragment{
     private static final String TITLE = "Add expense";
@@ -39,7 +38,7 @@ public class AddExpenseFragment extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_add_expense, container);
+        return inflater.inflate(R.layout.dialog_add_expense, container);
     }
 
     @Override
@@ -57,29 +56,28 @@ public class AddExpenseFragment extends DialogFragment{
         getDialog().setTitle(R.string.add_expense);
     }
 
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        String title = getArguments().getString(TITLE);
-//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-//        alertDialogBuilder.setTitle(title);
-//        alertDialogBuilder.setPositiveButton(R.string.ok,  new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                //// TODO: add expense
-//                //Expense expense = new Expense(etItemName.getText(), etPrice.getText(), 0);
-//                Log.i("mt", "CLICK: Positive Button");
-//            }
-//        });
-//        alertDialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (dialog != null /*&& dialog.isShowing()*/) {
-//                    dialog.dismiss();
-//            }
-//            }
-//
-//        });
-//
-//        return alertDialogBuilder.create();
-//    }
+    //TODO
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        builder.setView(inflater.inflate(R.layout.dialog_add_expense, null))
+            .setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("mt", "CLICK --> Positive button");
+                }
+            })
+            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i("mt", "CLICK --> Negative button");
+                    AddExpenseFragment.this.getDialog().cancel();
+
+                }
+            });
+
+        return builder.create();
+    }
 }
