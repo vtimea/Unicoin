@@ -44,15 +44,12 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         FragmentManager fm = getSupportFragmentManager();
         AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
         addExpenseFragment.show(fm, "dialog_add_expense");
-        Log.i("mt", "showAddExpenseDialog");
     }
 
     private void showAddIncomeDialog(){
-        //TODO: Add income dialog
-        Toast.makeText(getApplicationContext(), "Add income még nincs kész!", Toast.LENGTH_SHORT);
-        //FragmentManager fm = getSupportFragmentManager();
-        //TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
-        //transactionTypeFragment.show(fm, "fragment_add_income");
+        FragmentManager fm = getSupportFragmentManager();
+        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance();
+        addIncomeFragment.show(fm, "dialog_add_income");
     }
 
     @Override

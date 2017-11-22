@@ -22,7 +22,7 @@ public class Expense extends SugarRecord {
     }
 
     public String toString(){
-        String s = "Name: " + name + " Amount: " + amount + " Date: " + date.toString() + " Category: " + category;
+        String s = "\nName: " + name + "\nAmount: " + amount + "\nDate: " + date.toString() + "\nCategory: " + category;
         return s;
     }
 

@@ -17,4 +17,6 @@
     <string name="error_missing_price">Please enter price!</string>
     <string name="error_missing_date">Please enter date!</string>
     <string name="error_invalid_date">Please enter a valid date!</string>
+    <string name="amount">Amount</string>
+    <string name="add_income">Add income</string>
 </resources>
