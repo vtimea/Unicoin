@@ -8,13 +8,18 @@ public class Expense extends SugarRecord {
     String name;
     int amount;
     Date date;
-    int category;
+    Category category;
+
+    public enum Category {
+        UNCATEGORIZED, CLOTHING, DEBT, ENTERTAINMENT,
+        FOOD, HOUSING, INSURANCE, MEDICAL, MISCELLANEOUS
+    }
 
     public Expense(){
 
     }
 
-    public Expense(String name, int amount, Date date, int category){
+    public Expense(String name, int amount, Date date, Category category){
         this.name = name;
         this.amount = amount;
         this.date = date;

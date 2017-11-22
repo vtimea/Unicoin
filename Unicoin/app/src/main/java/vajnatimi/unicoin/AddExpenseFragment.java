@@ -1,14 +1,10 @@
 package vajnatimi.unicoin;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.icu.util.Calendar;
-import android.media.MediaCodec;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -16,17 +12,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import vajnatimi.unicoin.model.Expense;
 
@@ -68,7 +62,12 @@ public class AddExpenseFragment extends DialogFragment{
         etItemName = (EditText) view.findViewById(R.id.etItemName);
         etAmount = (EditText) view.findViewById(R.id.etAmount);
         cbRecurring = (CheckBox) view.findViewById(R.id.cbRecurring);
+
         spCategory = (Spinner) view.findViewById(R.id.spCategory);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.categories_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(adapter);
 
         etDate = (EditText) view.findViewById(R.id.etDate);
         etDate.setText(currentDate());
@@ -135,6 +134,9 @@ public class AddExpenseFragment extends DialogFragment{
         String name = etItemName.getText().toString();
         int price = Integer.parseInt(etAmount.getText().toString());
 
+        Expense.Category category = Expense.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
+        Log.i("mt", category.toString());
+
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         try {
@@ -142,7 +144,7 @@ public class AddExpenseFragment extends DialogFragment{
         } catch (ParseException e) {
             //TODO
         }
-        Expense expense = new Expense(name, price, date, 0);
+        Expense expense = new Expense(name, price, date, category);
         expense.save();
     }
 }

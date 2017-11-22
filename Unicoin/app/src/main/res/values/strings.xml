@@ -2,7 +2,6 @@
     <string name="app_name">Unicoin</string>
     <string name="action_settings">Settings</string>
     <string name="item_name">Item name</string>
-    <string name="price">Price</string>
     <string name="income">Income</string>
     <string name="expense">Expense</string>
     <string name="recurring">Recurring?</string>
@@ -14,9 +13,20 @@
     <string name="date_yyyy_mm_dd">Date (YYYY-MM--DD)</string>
     <string name="done">Done</string>
     <string name="error_missing_item_name">Please enter item name!</string>
-    <string name="error_missing_price">Please enter price!</string>
+    <string name="error_missing_price">Please enter amount!</string>
     <string name="error_missing_date">Please enter date!</string>
     <string name="error_invalid_date">Please enter a valid date!</string>
     <string name="amount">Amount</string>
     <string name="add_income">Add income</string>
+    <string-array name="categories_array">
+        <item>Uncategorized</item>
+        <item>Clothing</item>
+        <item>Debt</item>
+        <item>Entertainment</item>
+        <item>Food</item>
+        <item>Housing</item>
+        <item>Insurance</item>
+        <item>Medical</item>
+        <item>Miscellaneous</item>
+    </string-array>
 </resources>
