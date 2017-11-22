@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.orm.SugarContext;
+
 public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
 
     @Override
@@ -28,6 +30,8 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
                 showTransactionTypeDialog();
             }
         });
+
+        SugarContext.init(this);
     }
 
     private void showTransactionTypeDialog() {

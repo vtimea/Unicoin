@@ -10,4 +10,11 @@
     <string name="add_expense">Add expense</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="date">Date</string>
+    <string name="date_yyyy_mm_dd">Date (YYYY-MM--DD)</string>
+    <string name="done">Done</string>
+    <string name="error_missing_item_name">Please enter item name!</string>
+    <string name="error_missing_price">Please enter price!</string>
+    <string name="error_missing_date">Please enter date!</string>
+    <string name="error_invalid_date">Please enter a valid date!</string>
 </resources>

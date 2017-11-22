@@ -1,54 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="24dip">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width= "match_parent"
+    android:layout_height= "match_parent"
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/tvItemName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/item_name"/>
-
-    <EditText
-        android:id="@+id/etItemName"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:padding="24dip">
 
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dip"
-        android:text="@string/price"/>
-    <EditText
-        android:id="@+id/etPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tvItemName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/item_name"/>
 
-    <TextView
-        android:id="@+id/tvCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dip"
-        android:text="@string/category"/>
+        <EditText
+            android:id="@+id/etItemName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-    <Spinner
-        android:id="@+id/spCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></Spinner>
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dip"
+            android:text="@string/price"/>
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
 
-    <CheckBox
-        android:id="@+id/cbRecurring"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dip"
-        android:text="@string/recurring"/>
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dip"
+            android:text="@string/category"/>
 
-    <EditText
-        android:id="@+id/etDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <Spinner
+            android:id="@+id/spCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Spinner>
 
-</LinearLayout>
+        <CheckBox
+            android:id="@+id/cbRecurring"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dip"
+            android:text="@string/recurring"/>
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dip"
+            android:text="@string/date_yyyy_mm_dd"/>
+
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:ellipsize="start" />
+
+    </LinearLayout>
+</ScrollView>
