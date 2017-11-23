@@ -14,14 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import vajnatimi.unicoin.model.Expense;
-import vajnatimi.unicoin.model.Income;
+import vajnatimi.unicoin.model.Transaction2;
 
 public class AddIncomeFragment extends DialogFragment{
     private static final String TITLE = "Add income";
@@ -124,7 +122,7 @@ public class AddIncomeFragment extends DialogFragment{
 
     private void saveIncome(){
         String name = etItemName.getText().toString();
-        int price = Integer.parseInt(etAmount.getText().toString());
+        int amount = Integer.parseInt(etAmount.getText().toString());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
@@ -133,7 +131,10 @@ public class AddIncomeFragment extends DialogFragment{
         } catch (ParseException e) {
             //TODO
         }
-        Income income = new Income(name, price, date);
-        income.save();
+
+        boolean recurr = cbRecurring.isChecked();
+
+        Transaction2 transaction = new Transaction2(name, amount, date, recurr);
+        transaction.save();
     }
 }

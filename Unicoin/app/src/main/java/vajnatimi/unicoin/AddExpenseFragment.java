@@ -21,8 +21,9 @@ import android.widget.Spinner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-import vajnatimi.unicoin.model.Expense;
+import vajnatimi.unicoin.model.Transaction2;
 
 public class AddExpenseFragment extends DialogFragment{
     private static final String TITLE = "Add expense";
@@ -132,9 +133,9 @@ public class AddExpenseFragment extends DialogFragment{
 
     private void saveExpense(){
         String name = etItemName.getText().toString();
-        int price = Integer.parseInt(etAmount.getText().toString());
+        int amount = Integer.parseInt(etAmount.getText().toString());
 
-        Expense.Category category = Expense.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
+        Transaction2.Category category = Transaction2.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
         Log.i("mt", category.toString());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -144,7 +145,13 @@ public class AddExpenseFragment extends DialogFragment{
         } catch (ParseException e) {
             //TODO
         }
-        Expense expense = new Expense(name, price, date, category);
-        expense.save();
+
+        boolean recurr = cbRecurring.isChecked();
+        Transaction2 transaction = new Transaction2(name, amount, date, recurr);
+        transaction.save();
+        List<Transaction2> l = Transaction2.listAll(Transaction2.class);
+        for(int i = 0; i < l.size(); ++i){
+            Log.i("mt", l.get(i).getName());
+        }
     }
 }

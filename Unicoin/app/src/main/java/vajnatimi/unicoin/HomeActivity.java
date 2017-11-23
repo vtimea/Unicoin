@@ -1,18 +1,22 @@
 package vajnatimi.unicoin;
 
-import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.orm.SchemaGenerator;
 import com.orm.SugarContext;
+import com.orm.SugarDb;
+
+import vajnatimi.unicoin.model.Transaction2;
 
 public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
 
@@ -20,8 +24,8 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -32,6 +36,14 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         });
 
         SugarContext.init(this);
+
+        RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView);
+        rv.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
+        RVAdapter rva = new RVAdapter();
+//        RVAdapter rva = new RVAdapter(Transaction2.sortByDate(Transaction2.listAll(Transaction2.class)));
+        rv.setAdapter(rva);
     }
 
     private void showTransactionTypeDialog() {
