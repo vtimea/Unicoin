@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/gHome"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemHome"
+            android:title="Home"/>
+    </group>
+    <group android:id="@+id/gExpenses"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemExpenses"
+            android:title="Expenses"/>
+    </group>
+    <group android:id="@+id/gIncomes"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemIncomes"
+            android:title="Incomes"/>
+    </group>
+    <group android:id="@+id/gSettings"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemSettings"
+            android:title="Settings"/>
+    </group>
+</menu>

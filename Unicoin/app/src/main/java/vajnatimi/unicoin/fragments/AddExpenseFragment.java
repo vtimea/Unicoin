@@ -1,4 +1,4 @@
-package vajnatimi.unicoin;
+package vajnatimi.unicoin.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,44 +9,50 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.RVAdapter;
 import vajnatimi.unicoin.model.Transaction2;
 
-public class AddIncomeFragment extends DialogFragment{
-    private static final String TITLE = "Add income";
+public class AddExpenseFragment extends DialogFragment{
+    private static final String TITLE = "Add expense";
 
     private EditText etItemName;
     private EditText etAmount;
     private CheckBox cbRecurring;
+    private Spinner spCategory;
     private EditText etDate;
 
-    public AddIncomeFragment(){}
+    public AddExpenseFragment(){}
 
-    public static AddIncomeFragment newInstance() {
-        AddIncomeFragment frag = new AddIncomeFragment();
+    public static AddExpenseFragment newInstance() {
+        AddExpenseFragment frag = new AddExpenseFragment();
         return frag;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_add_income, container);
+        return inflater.inflate(R.layout.dialog_add_expense, container);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDialog().setTitle(TITLE);
+        getDialog().setTitle(R.string.add_expense);
     }
 
     @Override
@@ -54,23 +60,29 @@ public class AddIncomeFragment extends DialogFragment{
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        View view = inflater.inflate(R.layout.dialog_add_income, null);
+        View view = inflater.inflate(R.layout.dialog_add_expense, null);
 
         etItemName = (EditText) view.findViewById(R.id.etItemName);
         etAmount = (EditText) view.findViewById(R.id.etAmount);
         cbRecurring = (CheckBox) view.findViewById(R.id.cbRecurring);
 
+        spCategory = (Spinner) view.findViewById(R.id.spCategory);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.categories_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spCategory.setAdapter(adapter);
+
         etDate = (EditText) view.findViewById(R.id.etDate);
         etDate.setText(currentDate());
 
         builder.setView(view)
-                .setPositiveButton(R.string.done, null)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AddIncomeFragment.this.getDialog().cancel();
-                    }
-                });
+            .setPositiveButton(R.string.done, null)
+            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AddExpenseFragment.this.getDialog().cancel();
+                }
+            });
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -102,7 +114,7 @@ public class AddIncomeFragment extends DialogFragment{
                             return;
                         }
                         else{
-                            saveIncome();
+                            saveExpense();
                             dismiss();
                         }
                     }
@@ -121,9 +133,12 @@ public class AddIncomeFragment extends DialogFragment{
         return formattedDate;
     }
 
-    private void saveIncome(){
+    private void saveExpense(){
         String name = etItemName.getText().toString();
         int amount = Integer.parseInt(etAmount.getText().toString());
+
+        Transaction2.Category category = Transaction2.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
+        Log.i("mt", category.toString());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
@@ -134,7 +149,6 @@ public class AddIncomeFragment extends DialogFragment{
         }
 
         boolean recurr = cbRecurring.isChecked();
-
         Transaction2 transaction = new Transaction2(name, amount, date, recurr);
         transaction.save();
 
