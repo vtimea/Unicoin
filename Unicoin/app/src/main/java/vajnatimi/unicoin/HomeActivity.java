@@ -42,7 +42,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
         RVAdapter rva = new RVAdapter();
-//        RVAdapter rva = new RVAdapter(Transaction2.sortByDate(Transaction2.listAll(Transaction2.class)));
         rv.setAdapter(rva);
     }
 

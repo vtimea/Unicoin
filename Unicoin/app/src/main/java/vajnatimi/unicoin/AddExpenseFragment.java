@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +23,6 @@ import android.widget.Spinner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import vajnatimi.unicoin.model.Transaction2;
 
@@ -149,9 +150,9 @@ public class AddExpenseFragment extends DialogFragment{
         boolean recurr = cbRecurring.isChecked();
         Transaction2 transaction = new Transaction2(name, amount, date, recurr);
         transaction.save();
-        List<Transaction2> l = Transaction2.listAll(Transaction2.class);
-        for(int i = 0; i < l.size(); ++i){
-            Log.i("mt", l.get(i).getName());
-        }
+
+        RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
+        RVAdapter rva = (RVAdapter) rv.getAdapter();
+        rva.update();
     }
 }

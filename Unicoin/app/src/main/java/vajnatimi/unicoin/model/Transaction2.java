@@ -5,8 +5,12 @@ import android.util.Log;
 
 import com.orm.SugarRecord;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import static java.util.Collections.sort;
 
 public class Transaction2 extends SugarRecord{
     boolean recurr;
@@ -50,6 +54,11 @@ public class Transaction2 extends SugarRecord{
         return amount;
     }
 
+    public String getAmountString(){
+        String s = String.valueOf(amount);
+        return s;
+    }
+
     public Date getDate(){
         return date;
     }
@@ -71,22 +80,4 @@ public class Transaction2 extends SugarRecord{
                     + "\n RECURR: " + recurr;
         return s;
     }
-
-    public static List<Transaction2> sortByDate(List<Transaction2> list){
-        int n = list.size();
-        for(int i = 0; i < n-1; ++i){
-            for(int j = i; j < n-1; ++j){
-                if(list.get(j).date.compareTo(list.get(j+1).date) < 0){
-                    Transaction2 temp = list.get(j);
-                    list.set(j, list.get(j+1));
-                    list.set(j+1, temp);
-
-                }
-            }
-        }
-        for(int i = 0; i < n; ++i)
-            Log.i("mt", "List == > " + list.get(i).date);
-        return list;
-    }
-
 }
