@@ -153,7 +153,6 @@ public class AddExpenseFragment extends DialogFragment{
         int amount = Integer.parseInt(etAmount.getText().toString())*(-1);
 
         Transaction2.Category category = Transaction2.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
-        Log.i("mt", category.toString());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
@@ -168,6 +167,9 @@ public class AddExpenseFragment extends DialogFragment{
         transaction.save();
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
+
+        //// TODO: 2017. 11. 28.
+
         RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
         rva.update();
     }

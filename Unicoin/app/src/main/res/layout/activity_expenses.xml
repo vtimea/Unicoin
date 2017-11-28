@@ -9,16 +9,42 @@
         android:id="@+id/drawer_layout"
         tools:context="vajnatimi.unicoin.activities.ExpensesActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+
+    <android.widget.FrameLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/recyclerView" />
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+                <Spinner
+                    android:id="@+id/spYear"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"></Spinner>
+                <Spinner
+                    android:id="@+id/spMonth"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"></Spinner>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recyclerView" />
+
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -28,7 +54,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@android:drawable/ic_menu_add" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </android.widget.FrameLayout>
 
     <ListView
         android:layout_height="match_parent"

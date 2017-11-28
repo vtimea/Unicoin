@@ -63,10 +63,22 @@ public class Transaction2 extends SugarRecord{
         return date;
     }
 
+    public int getYear(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c.get(Calendar.YEAR);
+    }
+
+    public int getMonth(){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c.get(Calendar.MONTH)+1;
+    }
+
     public String getDateString(){
         Calendar c = Calendar.getInstance();
         c.setTime(date);
-        String s = String.valueOf(c.get(Calendar.YEAR)) + "." + String.valueOf(c.get(Calendar.MONTH)) + "." + String.valueOf(c.get(Calendar.DAY_OF_MONTH)) + ".";
+        String s = String.valueOf(c.get(Calendar.YEAR)) + "." + String.valueOf(c.get(Calendar.MONTH)+1) + "." + String.valueOf(c.get(Calendar.DAY_OF_MONTH)) + ".";
         return s;
     }
 
