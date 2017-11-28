@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import vajnatimi.unicoin.model.Transaction2;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.TransactionViewHolder>{
+    private static final int NUM_OF_ITEMS_TO_SHOW = 10;
     private static List<Transaction2> transactions;
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder{
@@ -65,6 +67,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.TransactionViewHol
         };
         Collections.sort(transactions, comparator);
         Collections.reverse(transactions);
+        List<Transaction2> temp = new ArrayList<Transaction2>();
+        int items_to_show = transactions.size() > NUM_OF_ITEMS_TO_SHOW ? NUM_OF_ITEMS_TO_SHOW : transactions.size();
+        for(int i = 0; i < items_to_show; ++i){
+            temp.add(transactions.get(i));
+        }
+        transactions = temp;
         this.notifyDataSetChanged();
     }
 }
