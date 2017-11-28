@@ -17,17 +17,30 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
 import vajnatimi.unicoin.fragments.AddIncomeFragment;
+import vajnatimi.unicoin.model.Transaction2;
 
-public class IncomesActivity extends AppCompatActivity {
+public class IncomesActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     private String[] menuItems;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private Spinner spYear;
+    private Spinner spMonth;
+    private RecyclerView recyclerView;
+    private boolean firstRun= true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +55,15 @@ public class IncomesActivity extends AppCompatActivity {
 
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItems));
         drawerList.setOnItemClickListener(new IncomesActivity.DrawerItemClickListener());
+
+        spYear = (Spinner) this.findViewById(R.id.spYear);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, getSpAdapterArray_Year());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spYear.setAdapter(adapter);
+        spYear.setOnItemSelectedListener(this);
+
+        spMonth = (Spinner) this.findViewById(R.id.spMonth);
+        //spMonth.setOnItemSelectedListener(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -101,12 +123,12 @@ public class IncomesActivity extends AppCompatActivity {
         });
 
         //Recycler view inicializálása
-        RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView);
-        rv.setHasFixedSize(true);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setLayoutManager(llm);
+        recyclerView.setLayoutManager(llm);
         RVAdapter_INCOMES rva = new RVAdapter_INCOMES();
-        rv.setAdapter(rva);
+        recyclerView.setAdapter(rva);
     }
 
     @Override
@@ -148,6 +170,49 @@ public class IncomesActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        boolean monthSet = false;
+        Spinner spinner = (Spinner) parent;
+        String[] months = getResources().getStringArray(R.array.months_array);
+        switch (parent.getId()){
+            case R.id.spYear:
+                spMonth = (Spinner) this.findViewById(R.id.spMonth);
+                ArrayList<Integer> temp = getSpAdapterArray_Month(Integer.parseInt(spYear.getSelectedItem().toString())); //hónapok: 1,2
+                ArrayList<String> selectedMonths = new ArrayList<>(); //jan, febr
+                for(int i = 0; i < temp.size(); ++i){
+                    selectedMonths.add(months[temp.get(i)-1]);
+                }
+                Collections.reverse(selectedMonths);
+                spMonth = (Spinner) this.findViewById(R.id.spMonth);
+                ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, selectedMonths);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spMonth.setAdapter(adapter);
+                spMonth.setOnItemSelectedListener(this);
+
+                //if(!firstRun)((RVAdapter_EXPENSES) recyclerView.getAdapter()).update(Integer.parseInt(spYear.getSelectedItem().toString()));
+                break;
+
+            case R.id.spMonth:
+                int y = Integer.parseInt(spYear.getSelectedItem().toString());
+                int m = -1;
+                for(int i = 0; i < months.length; ++i){
+                    if(months[i].equals(spMonth.getSelectedItem().toString())){
+                        m = i+1;
+                        break;
+                    }
+                }
+                if(!firstRun)((RVAdapter_INCOMES) recyclerView.getAdapter()).update(y, m);
+                break;
+        }
+        firstRun = false;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     /*DRAWER STUFF*/
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
@@ -187,6 +252,30 @@ public class IncomesActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private ArrayList<Integer> getSpAdapterArray_Year(){
+        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
+        Set<Integer> years = new HashSet<>();
+
+        for(int i = 0; i < transactions.size(); ++i) {
+            if(transactions.get(i).getAmount() > 0){
+                years.add(transactions.get(i).getYear());
+            }
+        }
+        return new ArrayList<Integer>(years);
+    }
+
+    private ArrayList<Integer> getSpAdapterArray_Month(int YEAR){
+        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
+        Set<Integer> months = new HashSet<>();
+
+        for(int i = 0; i < transactions.size(); ++i) {
+            if(transactions.get(i).getYear() == YEAR && transactions.get(i).getAmount() > 0){
+                months.add(transactions.get(i).getMonth());
+            }
+        }
+        return new ArrayList<Integer>(months);
     }
 
 }

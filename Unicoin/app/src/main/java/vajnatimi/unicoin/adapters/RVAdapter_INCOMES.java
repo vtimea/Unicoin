@@ -18,7 +18,7 @@ import vajnatimi.unicoin.model.Transaction2;
 
 public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.TransactionViewHolder>{
     private static final int NUM_OF_ITEMS_TO_SHOW = 10;
-    private static List<Transaction2> transactions;
+    private static List<Transaction2> transactions = new ArrayList<>();
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
@@ -36,7 +36,7 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
     }
 
     public RVAdapter_INCOMES(){
-        update();
+        //update();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         return transactions.size();
     }
 
-    public void update(){
+    private void sortTransactions(){
         transactions = Transaction2.listAll(Transaction2.class);
         Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
             @Override
@@ -68,10 +68,27 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         };
         Collections.sort(transactions, comparator);
         Collections.reverse(transactions);
+    }
+
+    public void update(){
+        sortTransactions();
         List<Transaction2> temp = new ArrayList<Transaction2>();
         for(int i = 0; i < transactions.size(); ++i){
             if(transactions.get(i).getAmount() > 0)
                 temp.add(transactions.get(i));
+        }
+        transactions = temp;
+        this.notifyDataSetChanged();
+    }
+
+    public void update(int year, int month){
+        sortTransactions();
+        List<Transaction2> temp = new ArrayList<>();
+        for(int i = 0; i < transactions.size(); ++i){
+            if(transactions.get(i).getYear() == year && transactions.get(i).getMonth() == month && transactions.get(i).getAmount() > 0){
+                temp.add(transactions.get(i));
+            } else if(transactions.get(i).getYear() < year)
+                break;
         }
         transactions = temp;
         this.notifyDataSetChanged();

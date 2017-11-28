@@ -81,24 +81,12 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         this.notifyDataSetChanged();
     }
 
-//    public void update(int year){
-//        sortTransactions();
-//        List<Transaction2> temp = new ArrayList<>();
-//        for(int i = 0; i < transactions.size(); ++i){
-//            if(transactions.get(i).getYear() == year){
-//                temp.add(transactions.get(i));
-//            } else if(transactions.get(i).getYear() < year)
-//                break;
-//        }
-//        transactions = temp;
-//        this.notifyDataSetChanged();
-//    }
 
     public void update(int year, int month){
         sortTransactions();
         List<Transaction2> temp = new ArrayList<>();
         for(int i = 0; i < transactions.size(); ++i){
-            if(transactions.get(i).getYear() == year && transactions.get(i).getMonth() == month){
+            if(transactions.get(i).getYear() == year && transactions.get(i).getMonth() == month && transactions.get(i).getAmount() < 0){
                 temp.add(transactions.get(i));
             } else if(transactions.get(i).getYear() < year)
                 break;

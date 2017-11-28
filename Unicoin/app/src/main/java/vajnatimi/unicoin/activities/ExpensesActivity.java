@@ -262,7 +262,9 @@ public class ExpensesActivity extends AppCompatActivity implements AdapterView.O
         Set<Integer> years = new HashSet<>();
 
         for(int i = 0; i < transactions.size(); ++i) {
-            years.add(transactions.get(i).getYear());
+            if(transactions.get(i).getAmount() < 0){
+                years.add(transactions.get(i).getYear());
+            }
         }
         return new ArrayList<Integer>(years);
     }
@@ -272,7 +274,7 @@ public class ExpensesActivity extends AppCompatActivity implements AdapterView.O
         Set<Integer> months = new HashSet<>();
 
         for(int i = 0; i < transactions.size(); ++i) {
-            if(transactions.get(i).getYear() == YEAR){
+            if(transactions.get(i).getYear() == YEAR && transactions.get(i).getAmount() < 0){
                 months.add(transactions.get(i).getMonth());
             }
         }

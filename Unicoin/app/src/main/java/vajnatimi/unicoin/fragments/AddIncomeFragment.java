@@ -21,7 +21,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
+import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
 import vajnatimi.unicoin.model.Transaction2;
 
 public class AddIncomeFragment extends DialogFragment{
@@ -155,7 +157,17 @@ public class AddIncomeFragment extends DialogFragment{
         transaction.save();
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
-        RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
-        rva.update();
+
+        //// TODO: 2017. 11. 28.
+        if(rv.getAdapter() instanceof RVAdapter_HOME){
+            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
+            rva.update();
+        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
+            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
+            rva.update();
+        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
+            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
+            rva.update();
+        }
     }
 }
