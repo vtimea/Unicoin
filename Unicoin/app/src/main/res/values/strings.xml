@@ -31,4 +31,9 @@
         <item>Medical</item>
         <item>Miscellaneous</item>
     </string-array>
+    <string name="title_activity_incomes">IncomesActivity</string>
+    <string name="title_activity_expenses">ExpensesActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_incomes">Incomes</string>
+    <string name="title_expenses">Expenses</string>
 </resources>

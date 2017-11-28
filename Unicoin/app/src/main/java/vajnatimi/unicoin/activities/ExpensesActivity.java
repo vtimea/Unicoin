@@ -4,30 +4,28 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.orm.SugarContext;
 
 import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.RVAdapter;
 import vajnatimi.unicoin.fragments.AddExpenseFragment;
-import vajnatimi.unicoin.fragments.AddIncomeFragment;
-import vajnatimi.unicoin.fragments.TransactionTypeFragment;
 
-public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
+public class ExpensesActivity extends AppCompatActivity {
+
     private String[] menuItems;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -37,15 +35,15 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        setTitle(getString(R.string.title_home));
+        setContentView(R.layout.activity_expenses);
+        setTitle(getString(R.string.title_expenses));
 
         menuItems = getResources().getStringArray(R.array.menu_items_array);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) this.findViewById(R.id.left_drawer);
 
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, menuItems));
-        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerList.setOnItemClickListener(new ExpensesActivity.DrawerItemClickListener());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -98,12 +96,12 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showTransactionTypeDialog();
+                //TODO
+                FragmentManager fm = getSupportFragmentManager();
+                AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
+                addExpenseFragment.show(fm, "dialog_add_expense");
             }
         });
-
-        //Sugar ORM inicializálása
-        SugarContext.init(this);
 
         //Recycler view inicializálása
         RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView);
@@ -112,24 +110,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         rv.setLayoutManager(llm);
         RVAdapter rva = new RVAdapter();
         rv.setAdapter(rva);
-    }
-
-    private void showTransactionTypeDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
-        transactionTypeFragment.show(fm, "fragment_transaction_type");
-    }
-
-    private void showAddExpenseDialog(){
-        FragmentManager fm = getSupportFragmentManager();
-        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
-        addExpenseFragment.show(fm, "dialog_add_expense");
-    }
-
-    private void showAddIncomeDialog(){
-        FragmentManager fm = getSupportFragmentManager();
-        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance();
-        addIncomeFragment.show(fm, "dialog_add_income");
     }
 
     @Override
@@ -171,15 +151,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-    @Override
-    public void onFinishChoosing(String transactionType) {
-        if(transactionType.equals(getString(R.string.expense))){
-            showAddExpenseDialog();
-        } else if(transactionType.equals(getString(R.string.income))){
-            showAddIncomeDialog();
-        }
-    }
-
     /*DRAWER STUFF*/
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
@@ -190,6 +161,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
+        // Highlight the selected item, update the title, and close the drawer
         drawerList.setItemChecked(position, true);
         Intent intent;
         switch (position){

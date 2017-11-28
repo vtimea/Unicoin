@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="vajnatimi.unicoin.activities.HomeActivity"
-    tools:showIn="@layout/activity_home">
+    tools:context="vajnatimi.unicoin.activities.IncomesActivity"
+    tools:showIn="@layout/activity_incomes">
 
 </android.support.constraint.ConstraintLayout>
