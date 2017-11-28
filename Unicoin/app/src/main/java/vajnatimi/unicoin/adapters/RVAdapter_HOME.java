@@ -1,8 +1,8 @@
-package vajnatimi.unicoin;
+package vajnatimi.unicoin.adapters;
 
+import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +13,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.model.Transaction2;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.TransactionViewHolder>{
+public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.TransactionViewHolder>{
     private static final int NUM_OF_ITEMS_TO_SHOW = 10;
     private static List<Transaction2> transactions;
 
@@ -34,7 +35,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.TransactionViewHol
         }
     }
 
-    public RVAdapter(){
+    public RVAdapter_HOME(){
         update();
     }
 
@@ -50,6 +51,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.TransactionViewHol
         holder.tvTransactionName.setText(transactions.get(position).getName());
         holder.tvTransactionAmount.setText(transactions.get(position).getAmountString());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
+
+        if(transactions.get(position).getAmount() > 0){
+            holder.tvTransactionName.setTextColor(Color.rgb(79, 150, 95));
+            holder.tvTransactionAmount.setTextColor(Color.rgb(79, 150, 95));
+            holder.tvTransactionDate.setTextColor(Color.rgb(79, 150, 95));
+        }
+        else {
+            holder.tvTransactionName.setTextColor(Color.rgb(249, 79, 79));
+            holder.tvTransactionAmount.setTextColor(Color.rgb(249, 79, 79));
+            holder.tvTransactionDate.setTextColor(Color.rgb(249, 79, 79));
+        }
     }
 
     @Override

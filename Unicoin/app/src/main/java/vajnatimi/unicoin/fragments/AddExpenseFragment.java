@@ -2,6 +2,7 @@ package vajnatimi.unicoin.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import vajnatimi.unicoin.R;
-import vajnatimi.unicoin.RVAdapter;
+import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.model.Transaction2;
 
 public class AddExpenseFragment extends DialogFragment{
@@ -95,12 +96,23 @@ public class AddExpenseFragment extends DialogFragment{
 
                     @Override
                     public void onClick(View view) {
+                        Calendar c = Calendar.getInstance();
+                        try {
+                            c.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(etDate.getText().toString()));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            //TODO
+                        }
                         if(TextUtils.isEmpty(etItemName.getText().toString())){
                             etItemName.setError(getString(R.string.error_missing_item_name));
                             return;
                         }
                         else if(TextUtils.isEmpty(etAmount.getText().toString())){
                             etAmount.setError(getString(R.string.error_missing_price));
+                            return;
+                        }
+                        else if(Integer.parseInt(etAmount.getText().toString()) == 0){
+                            etAmount.setError(getString(R.string.error_amout_cant_be_zero));
                             return;
                         }
                         else if(TextUtils.isEmpty(etDate.getText().toString())){
@@ -112,6 +124,9 @@ public class AddExpenseFragment extends DialogFragment{
                             etDate.setError(getString(R.string.error_invalid_date) +
                                     "");
                             return;
+                        }
+                        else if(c.get(Calendar.DAY_OF_MONTH) > 28 && cbRecurring.isChecked()){
+                            etDate.setError(getString(R.string.error_recurring_invalid_date));
                         }
                         else{
                             saveExpense();
@@ -135,7 +150,7 @@ public class AddExpenseFragment extends DialogFragment{
 
     private void saveExpense(){
         String name = etItemName.getText().toString();
-        int amount = Integer.parseInt(etAmount.getText().toString());
+        int amount = Integer.parseInt(etAmount.getText().toString())*(-1);
 
         Transaction2.Category category = Transaction2.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
         Log.i("mt", category.toString());
@@ -153,7 +168,7 @@ public class AddExpenseFragment extends DialogFragment{
         transaction.save();
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
-        RVAdapter rva = (RVAdapter) rv.getAdapter();
+        RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
         rva.update();
     }
 }

@@ -36,4 +36,6 @@
     <string name="title_home">Home</string>
     <string name="title_incomes">Incomes</string>
     <string name="title_expenses">Expenses</string>
+    <string name="error_amout_cant_be_zero">Amount can\'t be zero!</string>
+    <string name="error_recurring_invalid_date">Recurring is checked. Day can\'t be bigger than 28.</string>
 </resources>

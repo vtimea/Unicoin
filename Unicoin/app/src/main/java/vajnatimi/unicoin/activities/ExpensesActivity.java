@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import vajnatimi.unicoin.R;
-import vajnatimi.unicoin.RVAdapter;
+import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
+import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.fragments.AddExpenseFragment;
 
 public class ExpensesActivity extends AppCompatActivity {
@@ -108,7 +107,7 @@ public class ExpensesActivity extends AppCompatActivity {
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter rva = new RVAdapter();
+        RVAdapter_EXPENSES rva = new RVAdapter_EXPENSES();
         rv.setAdapter(rva);
     }
 

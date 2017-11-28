@@ -17,15 +17,15 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.orm.SugarContext;
 
 import vajnatimi.unicoin.R;
-import vajnatimi.unicoin.RVAdapter;
+import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.fragments.AddExpenseFragment;
 import vajnatimi.unicoin.fragments.AddIncomeFragment;
 import vajnatimi.unicoin.fragments.TransactionTypeFragment;
+import vajnatimi.unicoin.model.Transaction2;
 
 public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
     private String[] menuItems;
@@ -104,13 +104,14 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
         //Sugar ORM inicializálása
         SugarContext.init(this);
+//        Transaction2.deleteAll(Transaction2.class);
 
         //Recycler view inicializálása
         RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter rva = new RVAdapter();
+        RVAdapter_HOME rva = new RVAdapter_HOME();
         rv.setAdapter(rva);
     }
 
