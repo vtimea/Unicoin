@@ -59,6 +59,7 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
     }
 
     private void sortTransactions(){
+        transactions.clear();
         transactions = Transaction2.listAll(Transaction2.class);
         Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
             @Override
@@ -77,6 +78,7 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
             if(transactions.get(i).getAmount() > 0)
                 temp.add(transactions.get(i));
         }
+        transactions.clear();
         transactions = temp;
         this.notifyDataSetChanged();
     }
@@ -90,6 +92,19 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
             } else if(transactions.get(i).getYear() < year)
                 break;
         }
+        transactions.clear();
+        transactions = temp;
+        this.notifyDataSetChanged();
+    }
+
+    public void updateByRecurr(){
+        sortTransactions();
+        List<Transaction2> temp = new ArrayList<>();
+        for(int i = 0; i < transactions.size(); ++i){
+            if(transactions.get(i).getRecurr() && transactions.get(i).getAmount() > 0)
+                temp.add(transactions.get(i));
+        }
+        transactions.clear();
         transactions = temp;
         this.notifyDataSetChanged();
     }

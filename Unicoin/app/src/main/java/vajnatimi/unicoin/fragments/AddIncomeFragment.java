@@ -1,6 +1,7 @@
 package vajnatimi.unicoin.fragments;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.icu.util.Calendar;
 import android.os.Bundle;
@@ -18,9 +19,11 @@ import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
@@ -33,12 +36,22 @@ public class AddIncomeFragment extends DialogFragment{
     private EditText etAmount;
     private CheckBox cbRecurring;
     private EditText etDate;
+    private static ArrayList<TransactionListener> listeners = new ArrayList<>();
 
     public AddIncomeFragment(){}
 
-    public static AddIncomeFragment newInstance() {
+    public static AddIncomeFragment newInstance(TransactionListener listener) {
         AddIncomeFragment frag = new AddIncomeFragment();
+        frag.addListener(listener);
         return frag;
+    }
+
+    private void addListener(TransactionListener listener){
+        for(int i = 0; i < listeners.size(); ++i){
+            if(listeners.get(i) == listener)
+                return;
+        }
+        listeners.add(listener);
     }
 
     @Override
@@ -158,16 +171,24 @@ public class AddIncomeFragment extends DialogFragment{
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-        //// TODO: 2017. 11. 28.
-        if(rv.getAdapter() instanceof RVAdapter_HOME){
-            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
-            rva.update();
-        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
-            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
-            rva.update();
-        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
-            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
-            rva.update();
+//        //// TODO: 2017. 11. 28.
+//        if(rv.getAdapter() instanceof RVAdapter_HOME){
+//            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
+//            rva.update();
+//        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
+//            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
+//            rva.update();
+//        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
+//            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
+//            rva.update();
+//        }
+//        if(getParentFragment() instanceof SlidePageAllTrsFragment){
+//            SlidePageAllTrsFragment slidePageAll = (SlidePageAllTrsFragment) getParentFragment();
+//            slidePageAll.update();
+//        }
+
+        for(int i = 0; i < listeners.size(); ++i){
+            listeners.get(i).update();
         }
     }
 }

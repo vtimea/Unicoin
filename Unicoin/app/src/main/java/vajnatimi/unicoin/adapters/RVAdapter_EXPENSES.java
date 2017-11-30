@@ -94,4 +94,15 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         transactions = temp;
         this.notifyDataSetChanged();
     }
+
+    public void updateByRecurr(){
+        sortTransactions();
+        List<Transaction2> temp = new ArrayList<>();
+        for(int i = 0; i < transactions.size(); ++i){
+            if(transactions.get(i).getRecurr() && transactions.get(i).getAmount() < 0)
+                temp.add(transactions.get(i));
+        }
+        transactions = temp;
+        this.notifyDataSetChanged();
+    }
 }

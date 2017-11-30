@@ -7,6 +7,8 @@ import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,9 +24,13 @@ import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
@@ -38,12 +44,22 @@ public class AddExpenseFragment extends DialogFragment{
     private CheckBox cbRecurring;
     private Spinner spCategory;
     private EditText etDate;
+    private static ArrayList<TransactionListener> listeners = new ArrayList<>();
 
     public AddExpenseFragment(){}
 
-    public static AddExpenseFragment newInstance() {
+    public static AddExpenseFragment newInstance(TransactionListener listener) {
         AddExpenseFragment frag = new AddExpenseFragment();
+        frag.addListener(listener);
         return frag;
+    }
+
+    private void addListener(TransactionListener listener){
+        for(int i = 0; i < listeners.size(); ++i){
+            if(listeners.get(i) == listener)
+                return;
+        }
+        listeners.add(listener);
     }
 
     @Override
@@ -170,16 +186,25 @@ public class AddExpenseFragment extends DialogFragment{
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-        //// TODO: 2017. 11. 28.
-        if(rv.getAdapter() instanceof RVAdapter_HOME){
-            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
-            rva.update();
-        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
-            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
-            rva.update();
-        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
-            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
-            rva.update();
+//        Fragment fg = getParentFragment();
+//        //// TODO: 2017. 11. 28.
+//        if(rv.getAdapter() instanceof RVAdapter_HOME){
+//            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
+//            rva.update();
+//        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
+//            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
+//            rva.update();
+//        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
+//            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
+//            rva.update();
+//        }
+//        if(getParentFragment() instanceof SlidePageAllTrsFragment){
+//            SlidePageAllTrsFragment slidePageAll = (SlidePageAllTrsFragment) getParentFragment();
+//            slidePageAll.update();
+//        }
+
+        for(int i = 0; i < listeners.size(); ++i){
+            listeners.get(i).update();
         }
 
     }

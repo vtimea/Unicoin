@@ -17,21 +17,32 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieEntry;
 import com.orm.SugarContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.fragments.AddExpenseFragment;
 import vajnatimi.unicoin.fragments.AddIncomeFragment;
 import vajnatimi.unicoin.fragments.TransactionTypeFragment;
 import vajnatimi.unicoin.model.Transaction2;
 
-public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener{
+public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener, TransactionListener{
     private String[] menuItems;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private RecyclerView rv;
+
+    //private PieChart chartHoliday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +50,8 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setTitle(getString(R.string.title_home));
+
+        //chartHoliday = (PieChart) findViewById(R.id.chartIncomeExpense);
 
         menuItems = getResources().getStringArray(R.array.menu_items_array);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -107,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 //        Transaction2.deleteAll(Transaction2.class);
 
         //Recycler view inicializálása
-        RecyclerView rv = (RecyclerView) findViewById(R.id.recyclerView);
+        rv = (RecyclerView) findViewById(R.id.recyclerView);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -123,13 +136,13 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
     private void showAddExpenseDialog(){
         FragmentManager fm = getSupportFragmentManager();
-        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance();
+        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance(this);
         addExpenseFragment.show(fm, "dialog_add_expense");
     }
 
     private void showAddIncomeDialog(){
         FragmentManager fm = getSupportFragmentManager();
-        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance();
+        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance(this);
         addIncomeFragment.show(fm, "dialog_add_income");
     }
 
@@ -149,6 +162,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Transaction2.deleteAll(Transaction2.class);
             return true;
         }
 
@@ -181,6 +195,12 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         }
     }
 
+    @Override
+    public void update() {
+        RVAdapter_HOME adapter = (RVAdapter_HOME) rv.getAdapter();
+        adapter.update();
+    }
+
     /*DRAWER STUFF*/
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
@@ -192,7 +212,8 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
         drawerList.setItemChecked(position, true);
-        Intent intent;
+        Intent intent = new Intent();
+        boolean b = false;
         switch (position){
             case 0:
                 intent = new Intent(this, HomeActivity.class);
@@ -204,12 +225,17 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
                 intent = new Intent(this, IncomesActivity.class);
                 break;
             default:
-                intent = new Intent();
-                //TODO: settings
+                //TODO
+                //intent = new Intent();
+                b = true;
+                Toast t = Toast.makeText(this, "Nothing to see here.", Toast.LENGTH_SHORT);
+                t.show();
                 break;
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        startActivity(intent);
+        if(!b){
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(intent);
+        }
 
         setTitle(menuItems[position]);
         drawerLayout.closeDrawer(drawerList);
@@ -220,5 +246,18 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
         return super.onPrepareOptionsMenu(menu);
     }
+
+//    private void loadTransactions(){
+//        List<PieEntry> entries = new ArrayList<>();
+//        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
+//        int num_expenses = 0;
+//        int num_incomes = 0;
+//        for(int i = 0; i < transactions.size(); ++i){
+//
+//        }
+//
+//
+//
+//    }
 
 }
