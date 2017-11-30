@@ -2,6 +2,7 @@ package vajnatimi.unicoin.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +28,8 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.orm.SugarContext;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import vajnatimi.unicoin.R;
@@ -254,14 +257,18 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
 
     private void loadTransactions() {
-        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
+        List<Transaction2> transactions = ((RVAdapter_HOME) rv.getAdapter()).getSortedTransactions();
+
+        int i = 0;
         long incomes = 0;
         long expenses = 0;
-        for(int i = 0; i < transactions.size(); ++i){
+        if(transactions.isEmpty()) return;
+        while (i < transactions.size() && transactions.get(i).getYear() == Calendar.getInstance().get(Calendar.YEAR) && transactions.get(i).getMonth() == Calendar.getInstance().get(Calendar.MONTH)+1){
             if(transactions.get(i).getAmount() > 0)
                 incomes += transactions.get(i).getAmount();
             else
                 expenses -= transactions.get(i).getAmount();
+            i++;
         }
 
         List<PieEntry> entries = new ArrayList<>();

@@ -71,7 +71,7 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         Collections.reverse(transactions);
     }
 
-    public void update(){
+    public List<Transaction2> update(){
         sortTransactions();
         List<Transaction2> temp = new ArrayList<Transaction2>();
         for(int i = 0; i < transactions.size(); ++i){
@@ -81,9 +81,11 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         transactions.clear();
         transactions = temp;
         this.notifyDataSetChanged();
+
+        return transactions;
     }
 
-    public void update(int year, int month){
+    public List<Transaction2> update(int year, int month){
         sortTransactions();
         List<Transaction2> temp = new ArrayList<>();
         for(int i = 0; i < transactions.size(); ++i){
@@ -95,6 +97,8 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         transactions.clear();
         transactions = temp;
         this.notifyDataSetChanged();
+
+        return transactions;
     }
 
     public void updateByRecurr(){
@@ -107,5 +111,18 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
         transactions.clear();
         transactions = temp;
         this.notifyDataSetChanged();
+    }
+
+    public List<Transaction2> getSortedTransactions(){
+        List<Transaction2> tr = Transaction2.listAll(Transaction2.class);
+        Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
+            @Override
+            public int compare(Transaction2 o1, Transaction2 o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        };
+        Collections.sort(tr, comparator);
+        Collections.reverse(tr);
+        return tr;
     }
 }

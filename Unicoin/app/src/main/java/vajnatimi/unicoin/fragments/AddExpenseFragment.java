@@ -30,7 +30,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 
 import vajnatimi.unicoin.R;
-import vajnatimi.unicoin.TransactionListener;
+ import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
 import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
@@ -171,6 +171,7 @@ public class AddExpenseFragment extends DialogFragment{
         int amount = Integer.parseInt(etAmount.getText().toString())*(-1);
 
         Transaction2.Category category = Transaction2.Category.valueOf(spCategory.getSelectedItem().toString().toUpperCase());
+        Log.i("mt", category.toString());
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
@@ -181,7 +182,7 @@ public class AddExpenseFragment extends DialogFragment{
         }
 
         boolean recurr = cbRecurring.isChecked();
-        Transaction2 transaction = new Transaction2(name, amount, date, recurr);
+        Transaction2 transaction = new Transaction2(name, amount, date, recurr, category);
         transaction.save();
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);

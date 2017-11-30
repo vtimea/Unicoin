@@ -1,5 +1,6 @@
 package vajnatimi.unicoin.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,11 +40,18 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
     private boolean firstRun= true;
     boolean isExpense;
 
+    private PieChart chart;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        rv = (ViewGroup) inflater.inflate(R.layout.fragment_slide_page_all_trs, container, false);
-
         isExpense = getArguments().getBoolean("isExpense");
+
+        if(isExpense) {
+            rv = (ViewGroup) inflater.inflate(R.layout.fragment_slide_page_all_trs_expense, container, false);
+            chart = (PieChart) rv.findViewById(R.id.chartHoliday);
+        }
+        else
+            rv = (ViewGroup) inflater.inflate(R.layout.fragment_slide_page_all_trs_income, container, false);
 
         spYear = (Spinner) rv.findViewById(R.id.spYear);
         ArrayAdapter<CharSequence> adapter = new ArrayAdapter(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, getSpAdapterArray_Year());
@@ -168,6 +181,7 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
                 } else {
                     if(!firstRun)((RVAdapter_INCOMES) recyclerView.getAdapter()).update(y, m);
                 }
+                loadTransactions(y, m);
                 break;
         }
         firstRun = false;
@@ -216,5 +230,84 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
         }
 
         firstRun = false;
+    }
+
+    private void loadTransactions(int y, int m) {
+        List<Transaction2> trs;
+        if(isExpense){
+            trs = ((RVAdapter_EXPENSES) recyclerView.getAdapter()).update(y, m);
+        } else {
+            return;
+        }
+
+        long[] categories = new long[9];
+
+        for(int i = 0; i < trs.size(); ++i){
+            switch (trs.get(i).getCategory()){
+                case UNCATEGORIZED:
+                    if(isExpense){categories[0] -= trs.get(i).getAmount(); break;}
+                    categories[0] += trs.get(i).getAmount();
+                    break;
+                case CLOTHING:
+                    if(isExpense){categories[1] -= trs.get(i).getAmount(); break;}
+                    categories[1] += trs.get(i).getAmount();
+                    break;
+                case DEBT:
+                    if(isExpense){categories[2] -= trs.get(i).getAmount(); break;}
+                    categories[2] += trs.get(i).getAmount();
+                    break;
+                case ENTERTAINMENT:
+                    if(isExpense){categories[3] -= trs.get(i).getAmount(); break;}
+                    categories[3] += trs.get(i).getAmount();
+                    break;
+                case FOOD:
+                    if(isExpense){categories[4] -= trs.get(i).getAmount(); break;}
+                    categories[4] += trs.get(i).getAmount();
+                    break;
+                case HOUSING:
+                    if(isExpense){categories[5] -= trs.get(i).getAmount(); break;}
+                    categories[5] += trs.get(i).getAmount();
+                    break;
+                case INSURANCE:
+                    if(isExpense){categories[6] -= trs.get(i).getAmount(); break;}
+                    categories[6] += trs.get(i).getAmount();
+                    break;
+                case MEDICAL:
+                    if(isExpense){categories[7] -= trs.get(i).getAmount(); break;}
+                    categories[7] += trs.get(i).getAmount();
+                    break;
+                default:
+                    if(isExpense){categories[8] -= trs.get(i).getAmount(); break;}
+                    categories[8] += trs.get(i).getAmount();
+                    break;
+            }
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+
+        for(int i = 0; i < categories.length; ++i){
+            if(categories[i] != 0) {
+                entries.add(new PieEntry(categories[i], getResources().getStringArray(R.array.categories_array)[i]));
+                colors.add(ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[i]));
+            }
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[0]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[1]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[2]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[3]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[4]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[5]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[6]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[7]),
+                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[8]));
+        dataSet.setDrawValues(false);
+
+        PieData data = new PieData(dataSet);
+        chart.setData(data);
+        chart.getDescription().setEnabled(false);
+        chart.invalidate();
     }
 }

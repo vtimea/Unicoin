@@ -87,4 +87,17 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         transactions = temp;
         this.notifyDataSetChanged();
     }
+
+    public List<Transaction2> getSortedTransactions(){
+        List<Transaction2> tr = Transaction2.listAll(Transaction2.class);
+        Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
+            @Override
+            public int compare(Transaction2 o1, Transaction2 o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        };
+        Collections.sort(tr, comparator);
+        Collections.reverse(tr);
+        return tr;
+    }
 }

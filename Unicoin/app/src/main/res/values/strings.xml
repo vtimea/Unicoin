@@ -20,17 +20,6 @@
     <string name="add_income">Add income</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
-    <string-array name="categories_array">
-        <item>Uncategorized</item>
-        <item>Clothing</item>
-        <item>Debt</item>
-        <item>Entertainment</item>
-        <item>Food</item>
-        <item>Housing</item>
-        <item>Insurance</item>
-        <item>Medical</item>
-        <item>Miscellaneous</item>
-    </string-array>
     <string name="title_activity_incomes">IncomesActivity</string>
     <string name="title_activity_expenses">ExpensesActivity</string>
     <string name="title_home">Home</string>

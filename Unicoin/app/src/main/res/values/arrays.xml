@@ -20,4 +20,26 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+    <string-array name="categories_array">
+        <item>Uncategorized</item>
+        <item>Clothing</item>
+        <item>Debt</item>
+        <item>Entertainment</item>
+        <item>Food</item>
+        <item>Housing</item>
+        <item>Insurance</item>
+        <item>Medical</item>
+        <item>Miscellaneous</item>
+    </string-array>
+    <string-array name="colors_array">
+        <item>aeb5c1</item>
+        <item>ef7ce8</item>
+        <item>3a5be0</item>
+        <item>6bd1db</item>
+        <item>60c950</item>
+        <item>c9c348</item>
+        <item>c99147</item>
+        <item>c63333</item>
+        <item>ad44e2</item>
+    </string-array>
 </resources>
