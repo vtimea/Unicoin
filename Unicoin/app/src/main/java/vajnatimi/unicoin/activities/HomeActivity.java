@@ -20,7 +20,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.orm.SugarContext;
 
 import java.util.ArrayList;
@@ -42,7 +45,8 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
     private RecyclerView rv;
 
-    //private PieChart chartHoliday;
+    private PieChart chart;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setTitle(getString(R.string.title_home));
-
-        //chartHoliday = (PieChart) findViewById(R.id.chartIncomeExpense);
 
         menuItems = getResources().getStringArray(R.array.menu_items_array);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -117,7 +119,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
         //Sugar ORM inicializálása
         SugarContext.init(this);
-//        Transaction2.deleteAll(Transaction2.class);
 
         //Recycler view inicializálása
         rv = (RecyclerView) findViewById(R.id.recyclerView);
@@ -126,6 +127,9 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         rv.setLayoutManager(llm);
         RVAdapter_HOME rva = new RVAdapter_HOME();
         rv.setAdapter(rva);
+
+        chart = (PieChart) findViewById(R.id.chartHoliday);
+        loadTransactions();
     }
 
     private void showTransactionTypeDialog() {
@@ -199,6 +203,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     public void update() {
         RVAdapter_HOME adapter = (RVAdapter_HOME) rv.getAdapter();
         adapter.update();
+        loadTransactions();
     }
 
     /*DRAWER STUFF*/
@@ -247,17 +252,30 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         return super.onPrepareOptionsMenu(menu);
     }
 
-//    private void loadTransactions(){
-//        List<PieEntry> entries = new ArrayList<>();
-//        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
-//        int num_expenses = 0;
-//        int num_incomes = 0;
-//        for(int i = 0; i < transactions.size(); ++i){
-//
-//        }
-//
-//
-//
-//    }
 
+    private void loadTransactions() {
+        List<Transaction2> transactions = Transaction2.listAll(Transaction2.class);
+        long incomes = 0;
+        long expenses = 0;
+        for(int i = 0; i < transactions.size(); ++i){
+            if(transactions.get(i).getAmount() > 0)
+                incomes += transactions.get(i).getAmount();
+            else
+                expenses -= transactions.get(i).getAmount();
+        }
+
+        List<PieEntry> entries = new ArrayList<>();
+
+        entries.add(new PieEntry(incomes, "Incomes"));
+        entries.add(new PieEntry(expenses, "Expenses"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ColorTemplate.rgb("4cba65"), ColorTemplate.rgb("ff3f3f"));
+        dataSet.setDrawValues(false);
+
+        PieData data = new PieData(dataSet);
+        chart.setData(data);
+        chart.getDescription().setEnabled(false);
+        chart.invalidate();
+    }
 }
