@@ -294,15 +294,7 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[0]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[1]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[2]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[3]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[4]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[5]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[6]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[7]),
-                        ColorTemplate.rgb(getResources().getStringArray(R.array.colors_array)[8]));
+        dataSet.setColors(colors);
         dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
