@@ -104,4 +104,10 @@
     <string name="weekly_notifications">Weekly notifications</string>
     <string name="daily_notifications">Daily notifications</string>
     <string name="settings_title">Settings</string>
+    <string name="prefs_dailynottime">DailyNotTime</string>
+    <string name="prefs_dailynotenabled">DailyNotEnabled</string>
+    <string name="prefs_weeklynotday">WeeklyNotDay</string>
+    <string name="prefs_weeklynottime">WeeklyNotTime</string>
+    <string name="title_selectTime">Select Time</string>
+    <string name="prefs_weeklyNotEnabled">WeeklyNotEnabled</string>
 </resources>

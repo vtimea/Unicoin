@@ -2,8 +2,10 @@ package vajnatimi.unicoin.activities;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,8 @@ import android.widget.TimePicker;
 import vajnatimi.unicoin.R;
 
 public class SettingsActivity extends AppCompatActivity {
+    SharedPreferences sharedpreferences;
+
     //DRAWER
     private String[] menuItems;
     private DrawerLayout drawerLayout;
@@ -104,13 +108,20 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if(0 < minute && minute < 10)
-                            etDailyNotTime.setText(hourOfDay + ":" + "0" + minute);
-                        else
+                        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        if(0 < minute && minute < 10) {
+                            etDailyNotTime.setText(hourOfDay + ":0" + minute);
+                            editor.putString(getString(R.string.prefs_dailynottime), String.valueOf(hourOfDay) + ":0" + String.valueOf(minute));
+                        }
+                        else {
                             etDailyNotTime.setText(hourOfDay + ":" + minute);
+                            editor.putString(getString(R.string.prefs_dailynottime), String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
+                        }
+                        editor.apply();
                     }
                 }, hour, minute, true);
-                timePicker.setTitle("Select Time");
+                timePicker.setTitle(getString(R.string.title_selectTime));
                 timePicker.show();
             }
         });
@@ -120,8 +131,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean checked = swDailyNot.isChecked();
-//                etDailyNotTime.setFocusable(checked);
-//                etDailyNotTime.setFocusableInTouchMode(checked);
+
+                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(getString(R.string.prefs_dailynotenabled), String.valueOf(checked));
+                editor.apply();
+
                 etDailyNotTime.setClickable(checked);
                 etDailyNotTime.setEnabled(checked);
             }
@@ -137,7 +152,10 @@ public class SettingsActivity extends AppCompatActivity {
         spWeeklyNotDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
+                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(getString(R.string.prefs_weeklynotday), spWeeklyNotDay.getSelectedItem().toString());
+                editor.apply();
             }
 
             @Override
@@ -155,13 +173,22 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if(0 < minute && minute < 10)
-                            etWeeklyNotTime.setText(hourOfDay + ":" + "0" + minute);
-                        else
-                            etWeeklyNotTime.setText(hourOfDay + ":" + minute);
+                        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        if(0 < minute && minute < 10) {
+                            String s = hourOfDay + ":" + "0" + minute;
+                            etWeeklyNotTime.setText(s);
+                            editor.putString(getString(R.string.prefs_weeklynottime), s);
+                        }
+                        else {
+                            String s = hourOfDay + ":" + minute;
+                            etWeeklyNotTime.setText(s);
+                            editor.putString(getString(R.string.prefs_weeklynottime), s);
+                        }
+                        editor.apply();
                     }
                 }, hour, minute, true);
-                timePicker.setTitle("Select Time");
+                timePicker.setTitle(getString(R.string.title_selectTime));
                 timePicker.show();
             }
         });
@@ -171,6 +198,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean checked = swWeeklyNot.isChecked();
+
+                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(getString(R.string.prefs_weeklyNotEnabled), Boolean.toString(checked));
+                editor.apply();
+
                 etWeeklyNotTime.setClickable(checked);
                 etWeeklyNotTime.setEnabled(checked);
                 spWeeklyNotDay.setClickable(checked);
@@ -178,6 +211,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         /*<----------------/WEEKLY NOTIFICATIONS---------------->*/
+
 
     }
 
