@@ -187,23 +187,6 @@ public class AddExpenseFragment extends DialogFragment{
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-//        Fragment fg = getParentFragment();
-//        //// TODO: 2017. 11. 28.
-//        if(rv.getAdapter() instanceof RVAdapter_HOME){
-//            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
-//            rva.update();
-//        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
-//            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
-//            rva.update();
-//        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
-//            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
-//            rva.update();
-//        }
-//        if(getParentFragment() instanceof SlidePageAllTrsFragment){
-//            SlidePageAllTrsFragment slidePageAll = (SlidePageAllTrsFragment) getParentFragment();
-//            slidePageAll.update();
-//        }
-
         for(int i = 0; i < listeners.size(); ++i){
             listeners.get(i).update();
         }

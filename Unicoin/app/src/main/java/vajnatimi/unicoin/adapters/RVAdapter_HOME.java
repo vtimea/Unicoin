@@ -93,7 +93,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
                         break;
                     }
                 }
-                
+
                 ((OnItemLongClickListener) context).onItemLongClicked(position);
                 return true;
             }
