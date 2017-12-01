@@ -1,7 +1,9 @@
 package vajnatimi.unicoin.activities;
 
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.icu.util.Calendar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TimePicker;
 
 import vajnatimi.unicoin.R;
 
@@ -87,14 +90,28 @@ public class SettingsActivity extends AppCompatActivity {
         };
 
         drawerLayout.addDrawerListener(mDrawerToggle);
-        /*<----------------DRAWER STUFF---------------->*/
+        /*<----------------/DRAWER STUFF---------------->*/
 
         /*<----------------DAILY NOTIFICATIONS---------------->*/
-        etDailyNotTime = (EditText) findViewById(R.id.etDailyNotTime);
+        etDailyNotTime = (EditText) this.findViewById(R.id.etDailyNotTime);
         etDailyNotTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
+                Calendar currentTime = Calendar.getInstance();
+                int hour = currentTime.get(Calendar.HOUR);
+                int minute = currentTime.get(Calendar.MINUTE);
+                TimePickerDialog timePicker;
+                timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if(0 < minute && minute < 10)
+                            etDailyNotTime.setText(hourOfDay + ":" + "0" + minute);
+                        else
+                            etDailyNotTime.setText(hourOfDay + ":" + minute);
+                    }
+                }, hour, minute, true);
+                timePicker.setTitle("Select Time");
+                timePicker.show();
             }
         });
 
@@ -103,15 +120,20 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean checked = swDailyNot.isChecked();
-                etDailyNotTime.setFocusable(checked);
-                etDailyNotTime.setFocusableInTouchMode(checked);
+//                etDailyNotTime.setFocusable(checked);
+//                etDailyNotTime.setFocusableInTouchMode(checked);
                 etDailyNotTime.setClickable(checked);
                 etDailyNotTime.setEnabled(checked);
             }
         });
-        /*<----------------DAILY NOTIFICATIONS---------------->*/
+        /*<----------------/DAILY NOTIFICATIONS---------------->*/
 
+        /*<----------------WEEKLY NOTIFICATIONS---------------->*/
         spWeeklyNotDay = (Spinner) findViewById(R.id.spWeeklyNotDay);
+        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.days_of_week_array));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spWeeklyNotDay.setEnabled(false);
+        spWeeklyNotDay.setAdapter(adapter);
         spWeeklyNotDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -119,16 +141,28 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         etWeeklyNotTime = (EditText) findViewById(R.id.etWeeklyNotTime);
         etWeeklyNotTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO
+                Calendar currentTime = Calendar.getInstance();
+                int hour = currentTime.get(Calendar.HOUR);
+                int minute = currentTime.get(Calendar.MINUTE);
+                TimePickerDialog timePicker;
+                timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if(0 < minute && minute < 10)
+                            etWeeklyNotTime.setText(hourOfDay + ":" + "0" + minute);
+                        else
+                            etWeeklyNotTime.setText(hourOfDay + ":" + minute);
+                    }
+                }, hour, minute, true);
+                timePicker.setTitle("Select Time");
+                timePicker.show();
             }
         });
 
@@ -137,12 +171,13 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean checked = swWeeklyNot.isChecked();
-                etWeeklyNotTime.setFocusable(checked);
-                etWeeklyNotTime.setFocusableInTouchMode(checked);
                 etWeeklyNotTime.setClickable(checked);
                 etWeeklyNotTime.setEnabled(checked);
+                spWeeklyNotDay.setClickable(checked);
+                spWeeklyNotDay.setEnabled(checked);
             }
         });
+        /*<----------------/WEEKLY NOTIFICATIONS---------------->*/
 
     }
 

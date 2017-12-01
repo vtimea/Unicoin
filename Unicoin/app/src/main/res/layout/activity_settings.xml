@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:id="@+id/drawer_layout"
-    tools:context="vajnatimi.unicoin.activities.HomeActivity">
+    tools:context="vajnatimi.unicoin.activities.SettingsActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="time"
+            android:inputType="none"
             android:paddingTop="10dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
@@ -51,8 +51,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
                 android:clickable="false"
                 android:enabled="false"/>
 
@@ -62,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:ems="10"
-                android:inputType="time"
+                android:inputType="none"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:clickable="false"
