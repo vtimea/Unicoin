@@ -170,6 +170,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Transaction2.deleteAll(Transaction2.class);
+            update();
             return true;
         }
 
@@ -223,7 +224,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         }
     }
 
-    /** Swaps fragments in the main content view */
     private void selectItem(int position) {
         drawerList.setItemChecked(position, true);
         Intent intent;
@@ -275,11 +275,11 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
         List<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(incomes, "Incomes"));
-        entries.add(new PieEntry(expenses, "Expenses"));
+        entries.add(new PieEntry(incomes, getString(R.string.title_incomes)));
+        entries.add(new PieEntry(expenses, getString(R.string.title_expenses)));
 
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ColorTemplate.rgb("4cba65"), ColorTemplate.rgb("ff3f3f"));
+        PieDataSet dataSet = new PieDataSet(entries, "This month's transactions");
+        dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorIncome)), ColorTemplate.rgb(getString(R.string.colorExpense)));
         dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);

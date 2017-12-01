@@ -96,6 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(mDrawerToggle);
         /*<----------------/DRAWER STUFF---------------->*/
 
+        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         /*<----------------DAILY NOTIFICATIONS---------------->*/
         etDailyNotTime = (EditText) this.findViewById(R.id.etDailyNotTime);
         etDailyNotTime.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +109,6 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         if(0 < minute && minute < 10) {
                             etDailyNotTime.setText(hourOfDay + ":0" + minute);
@@ -125,6 +125,12 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker.show();
             }
         });
+        //get the set values
+        String dnt = sharedpreferences.getString(getString(R.string.prefs_dailynottime), getString(R.string.empty));
+        if(!dnt.equals(getString(R.string.empty))){
+            etDailyNotTime.setText(dnt);
+        }
+
 
         swDailyNot = (Switch) findViewById(R.id.swDailyNot);
         swDailyNot.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +138,6 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean checked = swDailyNot.isChecked();
 
-                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_dailynotenabled), String.valueOf(checked));
                 editor.apply();
@@ -141,6 +146,13 @@ public class SettingsActivity extends AppCompatActivity {
                 etDailyNotTime.setEnabled(checked);
             }
         });
+        //get the set values
+        String dne = sharedpreferences.getString(getString(R.string.prefs_dailynotenabled), getString(R.string.empty));
+        if(!dne.equals(getString(R.string.empty))){
+            swDailyNot.setChecked(Boolean.valueOf(dne));
+            etDailyNotTime.setClickable(Boolean.valueOf(dne));
+            etDailyNotTime.setEnabled(Boolean.valueOf(dne));
+        }
         /*<----------------/DAILY NOTIFICATIONS---------------->*/
 
         /*<----------------WEEKLY NOTIFICATIONS---------------->*/
@@ -152,7 +164,6 @@ public class SettingsActivity extends AppCompatActivity {
         spWeeklyNotDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_weeklynotday), spWeeklyNotDay.getSelectedItem().toString());
                 editor.apply();
@@ -161,6 +172,17 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+        //get the set values
+        String wnd = sharedpreferences.getString(getString(R.string.prefs_weeklynotday), getString(R.string.empty));
+        if(!wnd.equals(getString(R.string.empty))){
+            for(int i = 0; i < getResources().getStringArray(R.array.days_of_week_array).length; ++i){
+                if(wnd.equals(getResources().getStringArray(R.array.days_of_week_array)[i])) {
+                    spWeeklyNotDay.setSelection(i);
+                    break;
+                }
+            }
+        }
+
 
         etWeeklyNotTime = (EditText) findViewById(R.id.etWeeklyNotTime);
         etWeeklyNotTime.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +195,6 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         SharedPreferences.Editor editor = sharedpreferences.edit();
                         if(0 < minute && minute < 10) {
                             String s = hourOfDay + ":" + "0" + minute;
@@ -192,6 +213,12 @@ public class SettingsActivity extends AppCompatActivity {
                 timePicker.show();
             }
         });
+        //get the set values
+        String wnt = sharedpreferences.getString(getString(R.string.prefs_weeklynottime), getString(R.string.empty));
+        if(!wnt.equals(getString(R.string.empty))){
+            etWeeklyNotTime.setText(wnt);
+        }
+
 
         swWeeklyNot = (Switch) findViewById(R.id.swWeeklyNot);
         swWeeklyNot.setOnClickListener(new View.OnClickListener() {
@@ -199,7 +226,6 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 boolean checked = swWeeklyNot.isChecked();
 
-                sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_weeklyNotEnabled), Boolean.toString(checked));
                 editor.apply();
@@ -210,6 +236,15 @@ public class SettingsActivity extends AppCompatActivity {
                 spWeeklyNotDay.setEnabled(checked);
             }
         });
+        //get the set values
+        String wne = sharedpreferences.getString(getString(R.string.prefs_weeklyNotEnabled), getString(R.string.empty));
+        if(!wne.equals(getString(R.string.empty))){
+            spWeeklyNotDay.setClickable(Boolean.valueOf(wne));
+            spWeeklyNotDay.setEnabled(Boolean.valueOf(wne));
+            etWeeklyNotTime.setClickable(Boolean.valueOf(wne));
+            etWeeklyNotTime.setEnabled(Boolean.valueOf(wne));
+            swWeeklyNot.setChecked(Boolean.valueOf(wne));
+        }
         /*<----------------/WEEKLY NOTIFICATIONS---------------->*/
 
 
