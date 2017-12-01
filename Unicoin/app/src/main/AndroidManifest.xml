@@ -41,6 +41,7 @@
             android:name=".activities.ExpensesActivity"
             android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme" />
+        <activity android:name=".activities.SettingsActivity"></activity>
     </application>
 
 </manifest>

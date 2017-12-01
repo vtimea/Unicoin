@@ -154,7 +154,7 @@ public class IncomesActivity extends AppCompatActivity implements TransactionLis
 
     private void selectItem(int position) {
         drawerList.setItemChecked(position, true);
-        Intent intent = new Intent();
+        Intent intent;
         boolean b = false;
         switch (position){
             case 0:
@@ -167,11 +167,7 @@ public class IncomesActivity extends AppCompatActivity implements TransactionLis
                 intent = new Intent(this, IncomesActivity.class);
                 break;
             default:
-                //TODO
-                //intent = new Intent();
-                b = true;
-                Toast t = Toast.makeText(this, "Nothing to see here.", Toast.LENGTH_SHORT);
-                t.show();
+                intent = new Intent(this, SettingsActivity.class);
                 break;
         }
         if(!b){
