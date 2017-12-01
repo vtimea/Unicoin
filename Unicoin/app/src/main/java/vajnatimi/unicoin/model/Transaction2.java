@@ -46,6 +46,11 @@ public class Transaction2 extends SugarRecord{
         return recurr;
     }
 
+    public String getRecurrString(){
+        String s = Boolean.toString(recurr);
+        return s;
+    }
+
     public String getName(){
         return name;
     }
@@ -84,6 +89,10 @@ public class Transaction2 extends SugarRecord{
 
     public Category getCategory(){
         return category;
+    }
+
+    public String getCategoryString(){
+        return category.toString();
     }
 
     public String toString(){

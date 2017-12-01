@@ -40,7 +40,7 @@ import vajnatimi.unicoin.fragments.AddIncomeFragment;
 import vajnatimi.unicoin.fragments.TransactionTypeFragment;
 import vajnatimi.unicoin.model.Transaction2;
 
-public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener, TransactionListener{
+public class HomeActivity extends AppCompatActivity implements TransactionTypeFragment.TransactionTypeListener, TransactionListener, RVAdapter_HOME.OnItemLongClickListener {
     private String[] menuItems;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
@@ -128,7 +128,7 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        RVAdapter_HOME rva = new RVAdapter_HOME();
+        RVAdapter_HOME rva = new RVAdapter_HOME(this);
         rv.setAdapter(rva);
 
         chart = (PieChart) findViewById(R.id.chartHoliday);
@@ -207,6 +207,12 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         RVAdapter_HOME adapter = (RVAdapter_HOME) rv.getAdapter();
         adapter.update();
         loadTransactions();
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        update();
+        return true;
     }
 
     /*DRAWER STUFF*/

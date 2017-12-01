@@ -1,5 +1,7 @@
 package vajnatimi.unicoin.adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.orm.query.Condition;
+import com.orm.query.Select;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,12 +24,18 @@ import vajnatimi.unicoin.model.Transaction2;
 public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.TransactionViewHolder>{
     private static final int NUM_OF_ITEMS_TO_SHOW = 10;
     private static List<Transaction2> transactions;
+    private Context context;
+
+    public interface OnItemLongClickListener {
+        public boolean onItemLongClicked(int position);
+    }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView tvTransactionName;
         TextView tvTransactionDate;
         TextView tvTransactionAmount;
+        View view;
 
         public TransactionViewHolder(View itemView) {
             super(itemView);
@@ -32,10 +43,13 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
             tvTransactionName = (TextView)itemView.findViewById(R.id.tvTransactionName);
             tvTransactionDate = (TextView)itemView.findViewById(R.id.tvTransactionDate);
             tvTransactionAmount = (TextView)itemView.findViewById(R.id.tvTransactionAmount);
+
+            view = itemView;
         }
     }
 
-    public RVAdapter_HOME(){
+    public RVAdapter_HOME(Context context){
+        this.context = context;
         update();
     }
 
@@ -47,7 +61,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
     }
 
     @Override
-    public void onBindViewHolder(TransactionViewHolder holder, int position) {
+    public void onBindViewHolder(final TransactionViewHolder holder, final int position) {
         holder.tvTransactionName.setText(transactions.get(position).getName());
         holder.tvTransactionAmount.setText(transactions.get(position).getAmountString());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
@@ -62,6 +76,28 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
             holder.tvTransactionAmount.setTextColor(Color.rgb(249, 79, 79));
             holder.tvTransactionDate.setTextColor(Color.rgb(249, 79, 79));
         }
+
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Transaction2 toBeDeleted = transactions.get(position);
+                List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
+                for(int i = 0; i < trs.size(); ++i){
+                    Transaction2 temp = trs.get(i);
+                    if(temp.getName().equals(toBeDeleted.getName()) &&
+                            temp.getAmount() == toBeDeleted.getAmount() &&
+                            temp.getCategory() == toBeDeleted.getCategory() &&
+                            temp.getRecurr() == toBeDeleted.getRecurr() &&
+                            temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
+                        temp.delete();
+                        break;
+                    }
+                }
+                
+                ((OnItemLongClickListener) context).onItemLongClicked(position);
+                return true;
+            }
+        });
     }
 
     @Override

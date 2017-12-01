@@ -25,7 +25,7 @@
             android:value="sugar_example.db" />
         <meta-data
             android:name="VERSION"
-            android:value="23" />
+            android:value="24s" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="true" />
@@ -40,7 +40,7 @@
         <activity
             android:name=".activities.ExpensesActivity"
             android:label="@string/title_activity_expenses"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
