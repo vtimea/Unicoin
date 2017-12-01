@@ -246,8 +246,6 @@ public class SettingsActivity extends AppCompatActivity {
             swWeeklyNot.setChecked(Boolean.valueOf(wne));
         }
         /*<----------------/WEEKLY NOTIFICATIONS---------------->*/
-
-
     }
 
     @Override

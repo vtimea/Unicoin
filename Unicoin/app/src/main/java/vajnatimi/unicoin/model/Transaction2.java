@@ -1,16 +1,9 @@
 package vajnatimi.unicoin.model;
 
 import android.icu.util.Calendar;
-import android.util.Log;
-
 import com.orm.SugarRecord;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
-
-import static java.util.Collections.sort;
 
 public class Transaction2 extends SugarRecord{
     boolean recurr;
