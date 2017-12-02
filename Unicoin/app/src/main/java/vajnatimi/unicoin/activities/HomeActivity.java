@@ -131,6 +131,9 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         RVAdapter_HOME rva = new RVAdapter_HOME(this);
         rv.setAdapter(rva);
 
+        Calendar c = Calendar.getInstance();
+        rva.addRecurringTransactions(c.getTime());
+
         chart = (PieChart) findViewById(R.id.chartHoliday);
         loadTransactions();
     }
@@ -274,12 +277,17 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         }
 
         List<PieEntry> entries = new ArrayList<>();
-
-        entries.add(new PieEntry(incomes, getString(R.string.title_incomes)));
-        entries.add(new PieEntry(expenses, getString(R.string.title_expenses)));
-
         PieDataSet dataSet = new PieDataSet(entries, "This month's transactions");
-        dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorIncome)), ColorTemplate.rgb(getString(R.string.colorExpense)));
+
+        if(incomes != 0){
+            entries.add(new PieEntry(incomes, getString(R.string.title_incomes)));
+            dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorIncome)));
+        }
+        if(expenses != 0){
+            entries.add(new PieEntry(expenses, getString(R.string.title_expenses)));
+            dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorExpense)));
+        }
+
         dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
