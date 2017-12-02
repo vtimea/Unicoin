@@ -16,11 +16,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.orm.query.Condition;
+import com.orm.query.Select;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.TransactionListener;
@@ -167,25 +172,23 @@ public class AddIncomeFragment extends DialogFragment{
         boolean recurr = cbRecurring.isChecked();
 
         Transaction2 transaction = new Transaction2(name, amount, date, recurr);
+
+        //csak akkor ment ha még nincs ilyen record
+        int r = recurr ? 1 : 0;
+        List<Transaction2> l = Select.from(Transaction2.class).where(Condition.prop("name").eq(name),
+                Condition.prop("amount").eq(amount),
+                Condition.prop("recurr").eq(r)).list();
+        for(int i = 0; i < l.size(); ++i){
+            if(l.get(i).getDate().compareTo(transaction.getDate()) == 0) {
+                Toast.makeText(getContext(), "This transaction already exists.", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
         transaction.save();
 
         RecyclerView rv = (RecyclerView) getActivity().findViewById(R.id.recyclerView);
 
-//        //// TODO: 2017. 11. 28.
-//        if(rv.getAdapter() instanceof RVAdapter_HOME){
-//            RVAdapter_HOME rva = (RVAdapter_HOME) rv.getAdapter();
-//            rva.update();
-//        } else if(rv.getAdapter() instanceof RVAdapter_EXPENSES){
-//            RVAdapter_EXPENSES rva = (RVAdapter_EXPENSES) rv.getAdapter();
-//            rva.update();
-//        } else if(rv.getAdapter() instanceof RVAdapter_INCOMES){
-//            RVAdapter_INCOMES rva = (RVAdapter_INCOMES) rv.getAdapter();
-//            rva.update();
-//        }
-//        if(getParentFragment() instanceof SlidePageAllTrsFragment){
-//            SlidePageAllTrsFragment slidePageAll = (SlidePageAllTrsFragment) getParentFragment();
-//            slidePageAll.update();
-//        }
 
         for(int i = 0; i < listeners.size(); ++i){
             listeners.get(i).update();
