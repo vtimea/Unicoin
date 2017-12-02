@@ -1,15 +1,19 @@
 package vajnatimi.unicoin.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TimePicker;
 
+import vajnatimi.unicoin.NotificationService;
 import vajnatimi.unicoin.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -41,6 +46,9 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch swWeeklyNot;
     private Spinner spWeeklyNotDay;
     private EditText etWeeklyNotTime;
+
+    private int DAILY_REQUEST_CODE = 1;
+    private int WEEKLY_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +152,22 @@ public class SettingsActivity extends AppCompatActivity {
 
                 etDailyNotTime.setClickable(checked);
                 etDailyNotTime.setEnabled(checked);
+
+                //TURN ON/OFF NOTIFICATIONS
+                Intent intent = new Intent(getApplicationContext(), NotificationService.class);
+                intent.putExtra("type", "daily");
+                PendingIntent dailyNotification = PendingIntent.getService(getApplicationContext(), DAILY_REQUEST_CODE, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                int alarmType = AlarmManager.ELAPSED_REALTIME;
+                final int FIFTEEN_SEC_MILLIS = 15000;
+                AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+                if(checked){
+                    Log.i("notif", "Settings:DAILY: bekapcs");
+                    alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
+                } else {
+                    Log.i("notif", "Settings:DAILY: kikapcs");
+                    alarmManager.cancel(dailyNotification);
+                }
             }
         });
         //get the set values
@@ -234,6 +258,22 @@ public class SettingsActivity extends AppCompatActivity {
                 etWeeklyNotTime.setEnabled(checked);
                 spWeeklyNotDay.setClickable(checked);
                 spWeeklyNotDay.setEnabled(checked);
+
+                //TURN ON/OFF NOTIFICATIONS
+                Intent intent = new Intent(getApplicationContext(), NotificationService.class);
+                intent.putExtra("type", "weekly");
+                PendingIntent weeklyNotification = PendingIntent.getService(getApplicationContext(), WEEKLY_REQUEST_CODE, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                int alarmType = AlarmManager.ELAPSED_REALTIME;
+                final int FIFTEEN_SEC_MILLIS = 15000;
+                AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+                if(checked){
+                    Log.i("notif", "Settings:WEEKLY: bekapcs");
+                    alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, weeklyNotification);
+                } else {
+                    Log.i("notif", "Settings:WEEKLY: kikapcs");
+                    alarmManager.cancel(weeklyNotification);
+                }
             }
         });
         //get the set values

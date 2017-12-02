@@ -2,14 +2,13 @@ package vajnatimi.unicoin.activities;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +24,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
@@ -35,8 +33,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.orm.SugarContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import vajnatimi.unicoin.NotificationService;
@@ -57,6 +53,9 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
     private RecyclerView rv;
 
     private PieChart chart;
+
+    private int DAILY_REQUEST_CODE = 1;
+    private int WEEKLY_REQUEST_CODE = 2;
 
 
     @Override
@@ -146,15 +145,41 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         loadTransactions();
 
         //ALARM
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, NotificationService.class),
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String daily_isEnabled = sharedpreferences.getString(getString(R.string.prefs_dailynotenabled), getString(R.string.empty));
+        Boolean dailyEnabled = Boolean.valueOf(daily_isEnabled);
+        Log.i("notif", "Daily isEnabled:" + daily_isEnabled);
+        if(dailyEnabled && daily_isEnabled != ""){
+            Log.i("notif", "IF: dailyEnabled");
+            Intent intent = new Intent(this, NotificationService.class);
+            intent.putExtra("type", "daily");
+            PendingIntent dailyNotification = PendingIntent.getService(this, DAILY_REQUEST_CODE, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int alarmType = AlarmManager.ELAPSED_REALTIME;
-        final int FIFTEEN_SEC_MILLIS = 15000;
+            int alarmType = AlarmManager.ELAPSED_REALTIME;
+            final int FIFTEEN_SEC_MILLIS = 15000;
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
 
-        alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, pendingIntent);
+            alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
+        }
+        String weekly_isEnabled = sharedpreferences.getString(getString(R.string.prefs_weeklyNotEnabled), getString(R.string.empty));
+        Boolean weeklyEnabled = Boolean.valueOf(weekly_isEnabled);
+        Log.i("notif", "Weekly isEnabled:" + weekly_isEnabled);
+        if(weeklyEnabled && weekly_isEnabled != ""){
+            Log.i("notif", "IF: weeklyEnabled");
+            Intent intent = new Intent(this, NotificationService.class);
+            intent.putExtra("type", "weekly");
+            PendingIntent dailyNotification = PendingIntent.getService(this, WEEKLY_REQUEST_CODE, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            int alarmType = AlarmManager.ELAPSED_REALTIME;
+            final int FIFTEEN_SEC_MILLIS = 15000;
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
+
+            alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
+        }
 
     }
 

@@ -1,6 +1,7 @@
 package vajnatimi.unicoin;
 
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,6 +19,8 @@ public class NotificationService extends IntentService{
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        String s = intent.getExtras().getString("type");
+        Log.i("notif", "------->" + s);
         Log.i("notif", "=========> NOTIFICATION!!!");
     }
 }
