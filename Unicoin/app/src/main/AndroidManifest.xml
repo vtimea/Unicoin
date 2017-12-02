@@ -42,6 +42,11 @@
             android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme" />
         <activity android:name=".activities.SettingsActivity"></activity>
+
+        <service
+            android:name="vajnatimi.unicoin.NotificationService"
+            android:enabled="true" >
+        </service>
     </application>
 
 </manifest>

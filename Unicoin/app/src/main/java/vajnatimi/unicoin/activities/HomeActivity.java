@@ -1,9 +1,15 @@
 package vajnatimi.unicoin.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +17,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import vajnatimi.unicoin.NotificationService;
 import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
@@ -136,6 +144,18 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
         chart = (PieChart) findViewById(R.id.chartHoliday);
         loadTransactions();
+
+        //ALARM
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, NotificationService.class),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        int alarmType = AlarmManager.ELAPSED_REALTIME;
+        final int FIFTEEN_SEC_MILLIS = 15000;
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
+
+        alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, pendingIntent);
+
     }
 
     private void showTransactionTypeDialog() {
