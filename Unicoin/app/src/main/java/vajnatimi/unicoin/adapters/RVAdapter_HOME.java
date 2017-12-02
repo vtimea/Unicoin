@@ -3,12 +3,15 @@ package vajnatimi.unicoin.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.icu.util.Calendar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -16,6 +19,7 @@ import com.orm.query.Select;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import vajnatimi.unicoin.R;
@@ -105,7 +109,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         return transactions.size();
     }
 
-    public void update(){
+    public List<Transaction2> update(){
         transactions = Transaction2.listAll(Transaction2.class);
         Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
             @Override
@@ -122,6 +126,8 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         }
         transactions = temp;
         this.notifyDataSetChanged();
+
+        return transactions;
     }
 
     public List<Transaction2> getSortedTransactions(){
@@ -135,5 +141,25 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         Collections.sort(tr, comparator);
         Collections.reverse(tr);
         return tr;
+    }
+
+    public void addRecurringTransactions(Date currDate){
+        Calendar currC = Calendar.getInstance();
+        currC.setTime(currDate);
+        List<Transaction2> l = Select.from(Transaction2.class).where(Condition.prop("recurr").eq(1)).list();
+        for(int i = 0; i < l.size(); ++i){
+            Transaction2 old = l.get(i);
+            Calendar oldC = Calendar.getInstance();
+            oldC.setTime(old.getDate());
+            old.delete();
+            Transaction2 tr = old;
+            while (oldC.compareTo(currC) <= 0) {
+                tr = new Transaction2(old.getName(), old.getAmount(), oldC.getTime(), false, old.getCategory());
+                tr.save();
+                oldC.add(Calendar.MONTH, 1);
+            }
+            tr.setRecurr(true);
+            tr.save();
+        }
     }
 }

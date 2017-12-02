@@ -38,6 +38,7 @@ public class Transaction2 extends SugarRecord{
     public boolean getRecurr(){
         return recurr;
     }
+    public void setRecurr(boolean b) { this.recurr = b; }
 
     public String getRecurrString(){
         String s = Boolean.toString(recurr);
