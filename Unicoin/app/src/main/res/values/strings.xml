@@ -41,4 +41,9 @@
     <string name="colorIncome">4cba65</string>
     <string name="colorExpense">ff3f3f</string>
     <string name="empty" />
+    <string name="prefs_weeklyNotDayInt">prefs_weeklyNotDayInt</string>
+    <string name="title_unicoin_reminder">Unicoin reminder</string>
+    <string name="msg_today">Don\'t forget to add today\'s transactions!</string>
+    <string name="msg_week">Don\'t forget to add this week\'s transactions!</string>
+    <string name="pie_chart_label">This month\'s transactions</string>
 </resources>
