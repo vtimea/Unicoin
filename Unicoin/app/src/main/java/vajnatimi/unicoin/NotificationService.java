@@ -2,12 +2,12 @@ package vajnatimi.unicoin;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 
 public class NotificationService extends IntentService{
@@ -25,25 +25,27 @@ public class NotificationService extends IntentService{
         NotificationCompat.Builder mBuilder;
         int mNotificationId = 001;
         NotificationManager mNotifyMgr;
+        Uri alertSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         switch (s){
             case "daily":
-                Log.i("notif", "========> DAILY NOTIFICATION");
                 mBuilder =
                         new NotificationCompat.Builder(this)
-                                .setContentTitle("Unicoin reminder")
+                                .setContentTitle(getString(R.string.title_unicoin_reminder))
                                 .setSmallIcon(R.drawable.rc_notif)
-                                .setContentText("Don't forget to add today's transactions!");
+                                .setContentText(getString(R.string.msg_today))
+                                .setSound(alertSound);
                 mNotificationId = 001;
                 mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotifyMgr.notify(mNotificationId, mBuilder.build());
                 break;
             case "weekly":
-                Log.i("notif", "========> WEEKLY NOTIFICATION");
+                Log.i("notif", "====> NOTIFICATION");
                 mBuilder =
                         new NotificationCompat.Builder(this)
-                                .setContentTitle("Unicoin reminder")
+                                .setContentTitle(getString(R.string.title_unicoin_reminder))
                                 .setSmallIcon(R.drawable.rc_notif)
-                                .setContentText("Don't forget to add today's transactions!");
+                                .setContentText(getString(R.string.msg_week))
+                                .setSound(alertSound);
                 mNotificationId = 002;
                 mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 mNotifyMgr.notify(mNotificationId, mBuilder.build());
