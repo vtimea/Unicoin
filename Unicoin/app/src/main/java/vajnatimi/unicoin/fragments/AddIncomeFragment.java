@@ -110,7 +110,6 @@ public class AddIncomeFragment extends DialogFragment{
                             c.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(etDate.getText().toString()));
                         } catch (ParseException e) {
                             e.printStackTrace();
-                            //TODO
                         }
                         if(TextUtils.isEmpty(etItemName.getText().toString())){
                             etItemName.setError(getString(R.string.error_missing_item_name));
@@ -166,7 +165,7 @@ public class AddIncomeFragment extends DialogFragment{
         try {
             date = df.parse(etDate.getText().toString());
         } catch (ParseException e) {
-            //TODO
+            e.printStackTrace();
         }
 
         boolean recurr = cbRecurring.isChecked();

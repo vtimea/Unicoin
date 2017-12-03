@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import vajnatimi.unicoin.R;
+import vajnatimi.unicoin.activities.HomeActivity;
 import vajnatimi.unicoin.model.Transaction2;
 
 public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.TransactionViewHolder>{
@@ -143,6 +144,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         return tr;
     }
 
+    //Ismétlődő tranzakciók felvétele automatikusan
     public void addRecurringTransactions(Date currDate){
         Calendar currC = Calendar.getInstance();
         currC.setTime(currDate);

@@ -58,6 +58,7 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         return transactions.size();
     }
 
+    //Tranzakciók csökkenő időrendbe rendezése
     private void sortTransactions(){
         transactions = Transaction2.listAll(Transaction2.class);
         Comparator<Transaction2> comparator = new Comparator<Transaction2>() {
@@ -83,7 +84,7 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         return transactions;
     }
 
-
+    //A megadott hónaphoz tartozó tranzakciók listázása
     public List<Transaction2> update(int year, int month){
         sortTransactions();
         List<Transaction2> temp = new ArrayList<>();
@@ -99,6 +100,7 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         return transactions;
     }
 
+    //Ismétlődő tranzakciók listázása
     public void updateByRecurr(){
         sortTransactions();
         List<Transaction2> temp = new ArrayList<>();
@@ -110,6 +112,7 @@ public class RVAdapter_EXPENSES extends RecyclerView.Adapter<RVAdapter_EXPENSES.
         this.notifyDataSetChanged();
     }
 
+    //Tranzakciók időrendbe rendezése
     public List<Transaction2> getSortedTransactions(){
         List<Transaction2> tr = Transaction2.listAll(Transaction2.class);
         Comparator<Transaction2> comparator = new Comparator<Transaction2>() {

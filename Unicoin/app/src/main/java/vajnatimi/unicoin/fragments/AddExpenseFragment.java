@@ -2,17 +2,13 @@ package vajnatimi.unicoin.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +19,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 
@@ -31,15 +26,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.List;
 
 import vajnatimi.unicoin.R;
- import vajnatimi.unicoin.TransactionListener;
-import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
-import vajnatimi.unicoin.adapters.RVAdapter_HOME;
-import vajnatimi.unicoin.adapters.RVAdapter_INCOMES;
+import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.model.Transaction2;
 
 public class AddExpenseFragment extends DialogFragment{
@@ -125,7 +115,6 @@ public class AddExpenseFragment extends DialogFragment{
                             c.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(etDate.getText().toString()));
                         } catch (ParseException e) {
                             e.printStackTrace();
-                            //TODO
                         }
                         if(TextUtils.isEmpty(etItemName.getText().toString())){
                             etItemName.setError(getString(R.string.error_missing_item_name));
@@ -183,7 +172,7 @@ public class AddExpenseFragment extends DialogFragment{
         try {
             date = df.parse(etDate.getText().toString());
         } catch (ParseException e) {
-            //TODO
+            e.printStackTrace();
         }
 
         boolean recurr = cbRecurring.isChecked();
