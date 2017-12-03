@@ -23,6 +23,7 @@
 
         <EditText
             android:id="@+id/etDailyNotTime"
+            android:text="12:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -56,6 +57,7 @@
 
             <EditText
                 android:id="@+id/etWeeklyNotTime"
+                android:text="12:00"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
