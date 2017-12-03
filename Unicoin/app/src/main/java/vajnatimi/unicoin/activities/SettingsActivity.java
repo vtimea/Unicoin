@@ -111,14 +111,15 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar currentTime = Calendar.getInstance();
-                int hour = currentTime.get(Calendar.HOUR);
+                int hour = currentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = currentTime.get(Calendar.MINUTE);
                 TimePickerDialog timePicker;
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        //Beállítások kimentése
                         SharedPreferences.Editor editor = sharedpreferences.edit();
-                        if(0 < minute && minute < 10) {
+                        if(0 <= minute && minute < 10) {
                             etDailyNotTime.setText(hourOfDay + ":0" + minute);
                             editor.putString(getString(R.string.prefs_dailynottime), String.valueOf(hourOfDay) + ":0" + String.valueOf(minute));
                         }
@@ -127,13 +128,26 @@ public class SettingsActivity extends AppCompatActivity {
                             editor.putString(getString(R.string.prefs_dailynottime), String.valueOf(hourOfDay) + ":" + String.valueOf(minute));
                         }
                         editor.apply();
+
+                        //Értesítés beállítása
+                        String time;
+                        String[] hourandmin;
+                        Calendar cal;
+
+                        time = etDailyNotTime.getText().toString();
+                        hourandmin = time.split(":");
+                        cal = Calendar.getInstance();
+                        cal.set(Calendar.HOUR_OF_DAY, Integer.valueOf(hourandmin[0]));
+                        cal.set(Calendar.MINUTE, Integer.valueOf(hourandmin[1]));
+                        Log.i("notif", cal.getTime().toString());
+                        addAlarm(true, "daily", DAILY_REQUEST_CODE, cal);
                     }
                 }, hour, minute, true);
                 timePicker.setTitle(getString(R.string.title_selectTime));
                 timePicker.show();
             }
         });
-        //get the set values
+        //get values
         String dnt = sharedpreferences.getString(getString(R.string.prefs_dailynottime), getString(R.string.empty));
         if(!dnt.equals(getString(R.string.empty))){
             etDailyNotTime.setText(dnt);
@@ -144,33 +158,36 @@ public class SettingsActivity extends AppCompatActivity {
         swDailyNot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Beállítások kimentése
                 boolean checked = swDailyNot.isChecked();
 
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_dailynotenabled), String.valueOf(checked));
+                editor.putString(getString(R.string.prefs_dailynottime), etDailyNotTime.getText().toString());
                 editor.apply();
 
+                //Többi elem aktíválása/inaktiválása
                 etDailyNotTime.setClickable(checked);
                 etDailyNotTime.setEnabled(checked);
 
-                //TURN ON/OFF NOTIFICATIONS
-                Intent intent = new Intent(getApplicationContext(), NotificationService.class);
-                intent.putExtra("type", "daily");
-                PendingIntent dailyNotification = PendingIntent.getService(getApplicationContext(), DAILY_REQUEST_CODE, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                int alarmType = AlarmManager.ELAPSED_REALTIME;
-                final int FIFTEEN_SEC_MILLIS = 15000;
-                AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+                //Értesítés beállítása
+                String time;
+                String[] hourandmin;
+                Calendar cal = Calendar.getInstance();
+                SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(checked){
-                    Log.i("notif", "Settings:DAILY: bekapcs");
-                    alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
+                    time = etDailyNotTime.getText().toString();
+                    hourandmin = time.split(":");
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourandmin[0]));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(hourandmin[1]));
+                    Log.i("notif", cal.getTime().toString());
+                    addAlarm(checked, "daily", DAILY_REQUEST_CODE, cal);
                 } else {
-                    Log.i("notif", "Settings:DAILY: kikapcs");
-                    alarmManager.cancel(dailyNotification);
+                    cancelAlarm("daily", DAILY_REQUEST_CODE);
                 }
             }
         });
-        //get the set values
+        //get values
         String dne = sharedpreferences.getString(getString(R.string.prefs_dailynotenabled), getString(R.string.empty));
         if(!dne.equals(getString(R.string.empty))){
             swDailyNot.setChecked(Boolean.valueOf(dne));
@@ -188,19 +205,45 @@ public class SettingsActivity extends AppCompatActivity {
         spWeeklyNotDay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //Beállítások kimentése
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_weeklynotday), spWeeklyNotDay.getSelectedItem().toString());
+                int tempDay = spWeeklyNotDay.getSelectedItemPosition() + 2;
+                editor.putString(getString(R.string.prefs_weeklyNotDayInt), String.valueOf(tempDay));
                 editor.apply();
+
+                //Értesítés beállítása
+                if(swWeeklyNot.isChecked()) {
+                    String time;
+                    String[] hourandmin;
+                    Calendar cal = Calendar.getInstance();
+                    SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    String day = sharedpreferences.getString(getString(R.string.prefs_weeklyNotDayInt), getString(R.string.empty));
+                    int d = 1;
+                    if (!day.equals("")) d = Integer.parseInt(day);
+                    time = etWeeklyNotTime.getText().toString();
+                    hourandmin = time.split(":");
+                    cal.set(Calendar.DAY_OF_WEEK, d);
+                    Log.i("notif", "" + cal.get(Calendar.DAY_OF_WEEK));
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourandmin[0]));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(hourandmin[1]));
+                    Log.i("notif", cal.getTime().toString());
+                    addAlarm(true, "weekly", WEEKLY_REQUEST_CODE, cal);
+                    Log.i("notif", cal.getTime().toString());
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-        //get the set values
+        //get values
         String wnd = sharedpreferences.getString(getString(R.string.prefs_weeklynotday), getString(R.string.empty));
         if(!wnd.equals(getString(R.string.empty))){
             for(int i = 0; i < getResources().getStringArray(R.array.days_of_week_array).length; ++i){
                 if(wnd.equals(getResources().getStringArray(R.array.days_of_week_array)[i])) {
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString(getString(R.string.prefs_weeklyNotDayInt), Integer.toString(i+2));
+                    editor.apply();
                     spWeeklyNotDay.setSelection(i);
                     break;
                 }
@@ -212,8 +255,9 @@ public class SettingsActivity extends AppCompatActivity {
         etWeeklyNotTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Beállítások kimentése
                 Calendar currentTime = Calendar.getInstance();
-                int hour = currentTime.get(Calendar.HOUR);
+                final int hour = currentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = currentTime.get(Calendar.MINUTE);
                 TimePickerDialog timePicker;
                 timePicker = new TimePickerDialog(SettingsActivity.this, new TimePickerDialog.OnTimeSetListener() {
@@ -231,13 +275,31 @@ public class SettingsActivity extends AppCompatActivity {
                             editor.putString(getString(R.string.prefs_weeklynottime), s);
                         }
                         editor.apply();
+
+                        //Értesítés beállítása
+                        String time;
+                        String[] hourandmin;
+                        Calendar cal = Calendar.getInstance();
+                        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        String day = sharedpreferences.getString(getString(R.string.prefs_weeklyNotDayInt), getString(R.string.empty));
+                        int d = 1;
+                        if (!day.equals("")) d = Integer.parseInt(day);
+                        time = etWeeklyNotTime.getText().toString();
+                        hourandmin = time.split(":");
+                        cal.set(Calendar.DAY_OF_WEEK, d);
+                        Log.i("notif", "" + cal.get(Calendar.DAY_OF_WEEK));
+                        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourandmin[0]));
+                        cal.set(Calendar.MINUTE, Integer.parseInt(hourandmin[1]));
+                        Log.i("notif", cal.getTime().toString());
+                        addAlarm(true, "weekly", WEEKLY_REQUEST_CODE, cal);
+                        Log.i("notif", cal.getTime().toString());
                     }
                 }, hour, minute, true);
                 timePicker.setTitle(getString(R.string.title_selectTime));
                 timePicker.show();
             }
         });
-        //get the set values
+        //get values
         String wnt = sharedpreferences.getString(getString(R.string.prefs_weeklynottime), getString(R.string.empty));
         if(!wnt.equals(getString(R.string.empty))){
             etWeeklyNotTime.setText(wnt);
@@ -248,35 +310,43 @@ public class SettingsActivity extends AppCompatActivity {
         swWeeklyNot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Beállítások kimentése
                 boolean checked = swWeeklyNot.isChecked();
 
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(getString(R.string.prefs_weeklyNotEnabled), Boolean.toString(checked));
                 editor.apply();
 
+                //Többi elem aktíválása/inaktiválása
                 etWeeklyNotTime.setClickable(checked);
                 etWeeklyNotTime.setEnabled(checked);
                 spWeeklyNotDay.setClickable(checked);
                 spWeeklyNotDay.setEnabled(checked);
 
-                //TURN ON/OFF NOTIFICATIONS
-                Intent intent = new Intent(getApplicationContext(), NotificationService.class);
-                intent.putExtra("type", "weekly");
-                PendingIntent weeklyNotification = PendingIntent.getService(getApplicationContext(), WEEKLY_REQUEST_CODE, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                int alarmType = AlarmManager.ELAPSED_REALTIME;
-                final int FIFTEEN_SEC_MILLIS = 15000;
-                AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+                //Értesítés beállítása
+                String time;
+                String[] hourandmin;
+                Calendar cal = Calendar.getInstance();
+                SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(checked){
-                    Log.i("notif", "Settings:WEEKLY: bekapcs");
-                    alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, weeklyNotification);
+                    String day = sharedpreferences.getString(getString(R.string.prefs_weeklyNotDayInt), getString(R.string.empty));
+                    int d = 1;
+                    if (!day.equals("")) d = Integer.parseInt(day);
+                    time = etWeeklyNotTime.getText().toString();
+                    hourandmin = time.split(":");
+                    cal.set(Calendar.DAY_OF_WEEK, d);
+                    Log.i("notif", "" + cal.get(Calendar.DAY_OF_WEEK));
+                    cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hourandmin[0]));
+                    cal.set(Calendar.MINUTE, Integer.parseInt(hourandmin[1]));
+                    Log.i("notif", cal.getTime().toString());
+                    addAlarm(checked, "weekly", WEEKLY_REQUEST_CODE, cal);
                 } else {
-                    Log.i("notif", "Settings:WEEKLY: kikapcs");
-                    alarmManager.cancel(weeklyNotification);
+                    cancelAlarm("weekly", WEEKLY_REQUEST_CODE);
+                    Log.i("notif", "Cancel WEEKLY alarm.");
                 }
             }
         });
-        //get the set values
+        //get values
         String wne = sharedpreferences.getString(getString(R.string.prefs_weeklyNotEnabled), getString(R.string.empty));
         if(!wne.equals(getString(R.string.empty))){
             spWeeklyNotDay.setClickable(Boolean.valueOf(wne));
@@ -286,6 +356,52 @@ public class SettingsActivity extends AppCompatActivity {
             swWeeklyNot.setChecked(Boolean.valueOf(wne));
         }
         /*<----------------/WEEKLY NOTIFICATIONS---------------->*/
+    }
+
+    private void addAlarm(Boolean enabled, String freq, int REQUEST_CODE, Calendar date){
+        if(enabled){
+            Intent intent = new Intent(getApplicationContext(), NotificationService.class);
+            intent.putExtra("type", freq);
+            PendingIntent notification = PendingIntent.getService(getApplicationContext(), REQUEST_CODE, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+
+            int alarmType = AlarmManager.RTC_WAKEUP;
+
+            if(freq.equals("daily")){
+                Calendar c = Calendar.getInstance();
+                if(date.before(c))
+                    c.add(Calendar.DAY_OF_MONTH, 1);
+                c.set(Calendar.HOUR_OF_DAY, date.get(Calendar.HOUR_OF_DAY));
+                c.set(Calendar.MINUTE, date.get(Calendar.MINUTE));
+                c.set(Calendar.SECOND, 0);
+                Log.i("notif", c.getTime().toString());
+                Log.i("notif", "SETTINGS ===> add: " + " " + "Hour: " + c.get(Calendar.HOUR_OF_DAY) + "Minute: " + c.get(Calendar.MINUTE));
+                alarmManager.setRepeating(alarmType, c.getTimeInMillis(), 0, notification);
+            } else {
+                long interval = 1000 * 60 * 60 * 24 * 7;
+                Calendar c = Calendar.getInstance();
+                if(date.before(c))
+                    c.add(Calendar.DAY_OF_MONTH, 7);
+                c.set(Calendar.HOUR_OF_DAY, date.get(Calendar.HOUR_OF_DAY));
+                c.set(Calendar.MINUTE, date.get(Calendar.MINUTE));
+                c.set(Calendar.DAY_OF_WEEK, date.get(Calendar.DAY_OF_WEEK));
+                c.set(Calendar.SECOND, 0);
+                Log.i("notif", "SETTINGS ===> add: " + freq + " " + c.getTime().toString());
+                alarmManager.setRepeating(alarmType, c.getTimeInMillis(), interval, notification);
+            }
+        }
+    }
+
+    private void cancelAlarm(String freq, int REQUEST_CODE){
+        Log.i("notif", "SETTINGS ===> cancel " + freq);
+        Intent intent = new Intent(getApplicationContext(), NotificationService.class);
+        intent.putExtra("type", freq);
+        PendingIntent notification = PendingIntent.getService(getApplicationContext(), REQUEST_CODE, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(getApplicationContext().ALARM_SERVICE);
+        alarmManager.cancel(notification);
     }
 
     @Override
@@ -319,6 +435,15 @@ public class SettingsActivity extends AppCompatActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onBackPressed(){
+        drawerList.setItemChecked(0, true);
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        setTitle(menuItems[0]);
+        startActivity(intent);
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {

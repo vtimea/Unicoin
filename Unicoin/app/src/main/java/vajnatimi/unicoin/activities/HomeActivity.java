@@ -1,14 +1,9 @@
 package vajnatimi.unicoin.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.icu.util.Calendar;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -16,7 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +29,6 @@ import com.orm.SugarContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import vajnatimi.unicoin.NotificationService;
 import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.TransactionListener;
 import vajnatimi.unicoin.adapters.RVAdapter_HOME;
@@ -54,17 +47,27 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
 
     private PieChart chart;
 
-    private int DAILY_REQUEST_CODE = 1;
-    private int WEEKLY_REQUEST_CODE = 2;
+    private static boolean firstTime = true;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if(firstTime){
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            firstTime = false;
+        }
+        setTheme(R.style.AppTheme);
+
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setTitle(getString(R.string.title_home));
 
+        /*<----------------DRAWER STUFF---------------->*/
         menuItems = getResources().getStringArray(R.array.menu_items_array);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) this.findViewById(R.id.left_drawer);
@@ -78,17 +81,13 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 R.string.drawer_open, R.string.drawer_close) {
 
-            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
-            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -102,21 +101,17 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
                 R.string.drawer_close  /* "close drawer" description */
         ) {
 
-            /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                //getActionBar().setTitle(mTitle);
             }
 
-            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //getActionBar().setTitle(mDrawerTitle);
             }
         };
 
-        // Set the drawer toggle as the DrawerListener
         drawerLayout.addDrawerListener(mDrawerToggle);
+        /*<----------------/DRAWER SRUFF---------------->*/
 
         //Floating Action gomb inicializálása
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -138,133 +133,16 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         RVAdapter_HOME rva = new RVAdapter_HOME(this);
         rv.setAdapter(rva);
 
+        //Ismétlődő tranzakciók felvétele
         Calendar c = Calendar.getInstance();
         rva.addRecurringTransactions(c.getTime());
 
+        //Kördiagram inicializálása
         chart = (PieChart) findViewById(R.id.chartHoliday);
         loadTransactions();
-
-        //ALARM
-        SharedPreferences sharedpreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String daily_isEnabled = sharedpreferences.getString(getString(R.string.prefs_dailynotenabled), getString(R.string.empty));
-        Boolean dailyEnabled = Boolean.valueOf(daily_isEnabled);
-        Log.i("notif", "Daily isEnabled:" + daily_isEnabled);
-        if(dailyEnabled && daily_isEnabled != ""){
-            Log.i("notif", "IF: dailyEnabled");
-            Intent intent = new Intent(this, NotificationService.class);
-            intent.putExtra("type", "daily");
-            PendingIntent dailyNotification = PendingIntent.getService(this, DAILY_REQUEST_CODE, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            int alarmType = AlarmManager.ELAPSED_REALTIME;
-            final int FIFTEEN_SEC_MILLIS = 15000;
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
-
-            alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
-        }
-        String weekly_isEnabled = sharedpreferences.getString(getString(R.string.prefs_weeklyNotEnabled), getString(R.string.empty));
-        Boolean weeklyEnabled = Boolean.valueOf(weekly_isEnabled);
-        Log.i("notif", "Weekly isEnabled:" + weekly_isEnabled);
-        if(weeklyEnabled && weekly_isEnabled != ""){
-            Log.i("notif", "IF: weeklyEnabled");
-            Intent intent = new Intent(this, NotificationService.class);
-            intent.putExtra("type", "weekly");
-            PendingIntent dailyNotification = PendingIntent.getService(this, WEEKLY_REQUEST_CODE, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            int alarmType = AlarmManager.ELAPSED_REALTIME;
-            final int FIFTEEN_SEC_MILLIS = 15000;
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
-
-            alarmManager.setRepeating(alarmType, SystemClock.elapsedRealtime() + FIFTEEN_SEC_MILLIS, FIFTEEN_SEC_MILLIS, dailyNotification);
-        }
-
     }
 
-    private void showTransactionTypeDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
-        transactionTypeFragment.show(fm, "fragment_transaction_type");
-    }
-
-    private void showAddExpenseDialog(){
-        FragmentManager fm = getSupportFragmentManager();
-        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance(this);
-        addExpenseFragment.show(fm, "dialog_add_expense");
-    }
-
-    private void showAddIncomeDialog(){
-        FragmentManager fm = getSupportFragmentManager();
-        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance(this);
-        addIncomeFragment.show(fm, "dialog_add_income");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Transaction2.deleteAll(Transaction2.class);
-            update();
-            return true;
-        }
-
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public void onFinishChoosing(String transactionType) {
-        if(transactionType.equals(getString(R.string.expense))){
-            showAddExpenseDialog();
-        } else if(transactionType.equals(getString(R.string.income))){
-            showAddIncomeDialog();
-        }
-    }
-
-    @Override
-    public void update() {
-        RVAdapter_HOME adapter = (RVAdapter_HOME) rv.getAdapter();
-        adapter.update();
-        loadTransactions();
-    }
-
-    @Override
-    public boolean onItemLongClicked(int position) {
-        update();
-        return true;
-    }
-
-    /*DRAWER STUFF*/
+    /*<----------------DRAWER STUFF---------------->*/
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -304,8 +182,89 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
         return super.onPrepareOptionsMenu(menu);
     }
+    /*<----------------/DRAWER STUFF---------------->*/
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        //Összes tranzakció törlése
+        if (id == R.id.action_settings) {
+            Transaction2.deleteAll(Transaction2.class);
+            update();
+            return true;
+        }
+
+        //
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    //A fragment a tranzakció típusának kiválasztásához
+    private void showTransactionTypeDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        TransactionTypeFragment transactionTypeFragment = TransactionTypeFragment.newInstance();
+        transactionTypeFragment.show(fm, "fragment_transaction_type");
+    }
+
+    //Meghívódik amikor a user kiválasztotta a tranzakció típusát
+    @Override
+    public void onFinishChoosing(String transactionType) {
+        if(transactionType.equals(getString(R.string.expense))){
+            showAddExpenseDialog();
+        } else if(transactionType.equals(getString(R.string.income))){
+            showAddIncomeDialog();
+        }
+    }
+
+    //Kiadás hozzáadása
+    private void showAddExpenseDialog(){
+        FragmentManager fm = getSupportFragmentManager();
+        AddExpenseFragment addExpenseFragment = AddExpenseFragment.newInstance(this);
+        addExpenseFragment.show(fm, "dialog_add_expense");
+    }
+
+    //Bevétel hozzáadása
+    private void showAddIncomeDialog(){
+        FragmentManager fm = getSupportFragmentManager();
+        AddIncomeFragment addIncomeFragment = AddIncomeFragment.newInstance(this);
+        addIncomeFragment.show(fm, "dialog_add_income");
+    }
+
+    //Hosszú klikkre törli a tranzakciót
+    @Override
+    public boolean onItemLongClicked(int position) {
+        update();
+        return true;
+    }
+
+    @Override
+    public void onBackPressed(){
+        finish();
+    }
+
+    //tranzakciók betöltése a kördiagramhoz
     private void loadTransactions() {
         List<Transaction2> transactions = ((RVAdapter_HOME) rv.getAdapter()).getSortedTransactions();
 
@@ -322,22 +281,28 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         }
 
         List<PieEntry> entries = new ArrayList<>();
-        PieDataSet dataSet = new PieDataSet(entries, "This month's transactions");
+        PieDataSet dataSet = new PieDataSet(entries, getString(R.string.pie_chart_label));
 
         if(incomes != 0){
             entries.add(new PieEntry(incomes, getString(R.string.title_incomes)));
-            dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorIncome)));
         }
         if(expenses != 0){
             entries.add(new PieEntry(expenses, getString(R.string.title_expenses)));
-            dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorExpense)));
         }
 
+        dataSet.setColors(ColorTemplate.rgb(getString(R.string.colorIncome)), ColorTemplate.rgb(getString(R.string.colorExpense)));
         dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
         chart.setData(data);
         chart.getDescription().setEnabled(false);
         chart.invalidate();
+    }
+
+    @Override
+    public void update() {
+        RVAdapter_HOME adapter = (RVAdapter_HOME) rv.getAdapter();
+        adapter.update();
+        loadTransactions();
     }
 }

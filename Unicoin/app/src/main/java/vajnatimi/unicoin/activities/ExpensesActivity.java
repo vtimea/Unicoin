@@ -36,8 +36,8 @@ public class ExpensesActivity extends AppCompatActivity implements TransactionLi
     private ListView drawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
-    protected SlidePageAllTrsFragment allTrsFragment;
-    protected SlidePageRecurrFragment recurrFragment;
+    protected SlidePageAllTrsFragment allTrsFragment;   //összes kiadást mutatja
+    protected SlidePageRecurrFragment recurrFragment;   //csak az ismétlődőket mutatja
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class ExpensesActivity extends AppCompatActivity implements TransactionLi
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
 
+        /*-----------------DRAWER STUFF-----------------*/
         menuItems = getResources().getStringArray(R.array.menu_items_array);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) this.findViewById(R.id.left_drawer);
@@ -93,6 +94,8 @@ public class ExpensesActivity extends AppCompatActivity implements TransactionLi
         };
 
         drawerLayout.addDrawerListener(mDrawerToggle);
+
+        /*-----------------DRAWER STUFF-----------------*/
     }
 
     @Override
@@ -165,7 +168,11 @@ public class ExpensesActivity extends AppCompatActivity implements TransactionLi
     @Override
     public void onBackPressed() {
         if (viewPager.getCurrentItem() == 0) {
-            super.onBackPressed();
+            drawerList.setItemChecked(0, true);
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            setTitle(menuItems[0]);
+            startActivity(intent);
         } else {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
         }
