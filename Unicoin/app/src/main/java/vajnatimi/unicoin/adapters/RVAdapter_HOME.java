@@ -68,8 +68,11 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
     @Override
     public void onBindViewHolder(final TransactionViewHolder holder, final int position) {
         holder.tvTransactionName.setText(transactions.get(position).getName());
-        holder.tvTransactionAmount.setText(transactions.get(position).getAmountString());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
+
+        int amount = transactions.get(position).getAmount();
+        String formattedAmount = String.format("%,d", amount);
+        holder.tvTransactionAmount.setText(formattedAmount);
 
         if(transactions.get(position).getAmount() > 0){
             holder.tvTransactionName.setTextColor(Color.rgb(79, 150, 95));

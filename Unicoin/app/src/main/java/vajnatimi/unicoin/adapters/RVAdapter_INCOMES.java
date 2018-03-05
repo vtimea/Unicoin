@@ -3,11 +3,13 @@ package vajnatimi.unicoin.adapters;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,8 +51,11 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
     @Override
     public void onBindViewHolder(TransactionViewHolder holder, int position) {
         holder.tvTransactionName.setText(transactions.get(position).getName());
-        holder.tvTransactionAmount.setText(transactions.get(position).getAmountString());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
+
+        int amount = transactions.get(position).getAmount();
+        String formattedAmount = String.format("%,d", amount);
+        holder.tvTransactionAmount.setText(formattedAmount);
     }
 
     @Override
