@@ -1,7 +1,9 @@
 package vajnatimi.unicoin.adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 import android.support.v7.widget.CardView;
@@ -88,21 +90,52 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         holder.view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Transaction2 toBeDeleted = transactions.get(position);
-                List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
-                for(int i = 0; i < trs.size(); ++i){
-                    Transaction2 temp = trs.get(i);
-                    if(temp.getName().equals(toBeDeleted.getName()) &&
-                            temp.getAmount() == toBeDeleted.getAmount() &&
-                            temp.getCategory() == toBeDeleted.getCategory() &&
-                            temp.getRecurr() == toBeDeleted.getRecurr() &&
-                            temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
-                        temp.delete();
-                        break;
-                    }
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Action")
+                        .setItems(R.array.edit_or_delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(which == 0){
+                                    Toast.makeText(context, "EDIT!", Toast.LENGTH_SHORT).show();
+                                } else if(which == 1){
+                                    //Delete
+                                    Transaction2 toBeDeleted = transactions.get(position);
+                                    List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
+                                    for(int i = 0; i < trs.size(); ++i){
+                                        Transaction2 temp = trs.get(i);
+                                        if(temp.getName().equals(toBeDeleted.getName()) &&
+                                                temp.getAmount() == toBeDeleted.getAmount() &&
+                                                temp.getCategory() == toBeDeleted.getCategory() &&
+                                                temp.getRecurr() == toBeDeleted.getRecurr() &&
+                                                temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
+                                            temp.delete();
+                                            break;
+                                        }
+                                    }
 
-                ((OnItemLongClickListener) context).onItemLongClicked(position);
+                                    ((OnItemLongClickListener) context).onItemLongClicked(position);
+                                }
+                            }
+                        });
+                builder.create();
+                builder.show();
+
+//                //Delete
+//                Transaction2 toBeDeleted = transactions.get(position);
+//                List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
+//                for(int i = 0; i < trs.size(); ++i){
+//                    Transaction2 temp = trs.get(i);
+//                    if(temp.getName().equals(toBeDeleted.getName()) &&
+//                            temp.getAmount() == toBeDeleted.getAmount() &&
+//                            temp.getCategory() == toBeDeleted.getCategory() &&
+//                            temp.getRecurr() == toBeDeleted.getRecurr() &&
+//                            temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
+//                        temp.delete();
+//                        break;
+//                    }
+//                }
+//
+//                ((OnItemLongClickListener) context).onItemLongClicked(position);
                 return true;
             }
         });

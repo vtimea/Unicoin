@@ -51,4 +51,8 @@
         <item>c63333</item>
         <item>ad44e2</item>
     </string-array>
+    <string-array name="edit_or_delete">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 </resources>
