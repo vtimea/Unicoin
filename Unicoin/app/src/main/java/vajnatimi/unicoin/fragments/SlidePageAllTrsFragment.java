@@ -67,10 +67,10 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
         if(isExpense){
-            RVAdapter_EXPENSES rva = new RVAdapter_EXPENSES();
+            RVAdapter_EXPENSES rva = new RVAdapter_EXPENSES(getContext());
             recyclerView.setAdapter(rva);
         } else {
-            RVAdapter_INCOMES rva = new RVAdapter_INCOMES();
+            RVAdapter_INCOMES rva = new RVAdapter_INCOMES(getContext());
             recyclerView.setAdapter(rva);
         }
 
@@ -202,12 +202,19 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spYear.setAdapter(adapter);
 
+        if(spYear.getSelectedItem() == null){
+            spMonth.setAdapter(null);
+            recyclerView.getAdapter().notifyDataSetChanged();
+            return;
+        }
+
         spMonth = (Spinner) rv.findViewById(R.id.spMonth);
         ArrayList<Integer> temp = getSpAdapterArray_Month(Integer.parseInt(spYear.getSelectedItem().toString())); //hónapok: 1,2
         ArrayList<String> selectedMonths = new ArrayList<>(); //jan, febr
         for (int i = 0; i < temp.size(); ++i) {
             selectedMonths.add(months[temp.get(i) - 1]);
         }
+
         Collections.reverse(selectedMonths);
         spMonth = (Spinner) rv.findViewById(R.id.spMonth);
         adapter = new ArrayAdapter(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, selectedMonths);

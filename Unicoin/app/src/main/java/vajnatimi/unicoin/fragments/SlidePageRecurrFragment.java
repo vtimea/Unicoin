@@ -31,12 +31,12 @@ public class SlidePageRecurrFragment extends Fragment{
         recyclerView.setLayoutManager(llm);
 
         if(isExpense){
-            RVAdapter_EXPENSES rva = new RVAdapter_EXPENSES();
+            RVAdapter_EXPENSES rva = new RVAdapter_EXPENSES(getContext());
             rva.updateByRecurr();
             recyclerView.setAdapter(rva);
 
         } else {
-            RVAdapter_INCOMES rva = new RVAdapter_INCOMES();
+            RVAdapter_INCOMES rva = new RVAdapter_INCOMES(getContext());
             rva.updateByRecurr();
             recyclerView.setAdapter(rva);
         }

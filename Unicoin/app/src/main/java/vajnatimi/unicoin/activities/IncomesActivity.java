@@ -40,7 +40,7 @@ import vajnatimi.unicoin.fragments.SlidePageAllTrsFragment;
 import vajnatimi.unicoin.fragments.SlidePageRecurrFragment;
 import vajnatimi.unicoin.model.Transaction2;
 
-public class IncomesActivity extends AppCompatActivity implements TransactionListener{
+public class IncomesActivity extends AppCompatActivity implements TransactionListener, RVAdapter_INCOMES.OnItemLongClickListener{
     private static final int NUM_PAGES = 2;
 
     private ViewPager viewPager;
@@ -146,6 +146,12 @@ public class IncomesActivity extends AppCompatActivity implements TransactionLis
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        update();
+        return true;
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {

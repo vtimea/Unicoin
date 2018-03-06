@@ -33,6 +33,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
     private static List<Transaction2> transactions;
     private Context context;
 
+    //longclick listener for the recycler view items
     public interface OnItemLongClickListener {
         public boolean onItemLongClicked(int position);
     }
@@ -50,7 +51,6 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
             tvTransactionName = (TextView)itemView.findViewById(R.id.tvTransactionName);
             tvTransactionDate = (TextView)itemView.findViewById(R.id.tvTransactionDate);
             tvTransactionAmount = (TextView)itemView.findViewById(R.id.tvTransactionAmount);
-
             view = itemView;
         }
     }
@@ -72,10 +72,12 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
         holder.tvTransactionName.setText(transactions.get(position).getName());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
 
+        //format the amount before setting it to the textview -> 100,000,000
         int amount = transactions.get(position).getAmount();
         String formattedAmount = String.format("%,d", amount);
         holder.tvTransactionAmount.setText(formattedAmount);
 
+        //setting the color of the text view depending on the amount (expense or income)
         if(transactions.get(position).getAmount() > 0){
             holder.tvTransactionName.setTextColor(Color.rgb(79, 150, 95));
             holder.tvTransactionAmount.setTextColor(Color.rgb(79, 150, 95));
@@ -96,9 +98,10 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(which == 0){
+                                    //TODO: edit the transaction
                                     Toast.makeText(context, "EDIT!", Toast.LENGTH_SHORT).show();
                                 } else if(which == 1){
-                                    //Delete
+                                    //Delete the selected transaction
                                     Transaction2 toBeDeleted = transactions.get(position);
                                     List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
                                     for(int i = 0; i < trs.size(); ++i){
@@ -113,6 +116,7 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
                                         }
                                     }
 
+                                    //call the activitiy's onItemLongClicked function to update the view
                                     ((OnItemLongClickListener) context).onItemLongClicked(position);
                                 }
                             }
@@ -120,22 +124,6 @@ public class RVAdapter_HOME extends RecyclerView.Adapter<RVAdapter_HOME.Transact
                 builder.create();
                 builder.show();
 
-//                //Delete
-//                Transaction2 toBeDeleted = transactions.get(position);
-//                List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
-//                for(int i = 0; i < trs.size(); ++i){
-//                    Transaction2 temp = trs.get(i);
-//                    if(temp.getName().equals(toBeDeleted.getName()) &&
-//                            temp.getAmount() == toBeDeleted.getAmount() &&
-//                            temp.getCategory() == toBeDeleted.getCategory() &&
-//                            temp.getRecurr() == toBeDeleted.getRecurr() &&
-//                            temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
-//                        temp.delete();
-//                        break;
-//                    }
-//                }
-//
-//                ((OnItemLongClickListener) context).onItemLongClicked(position);
                 return true;
             }
         });

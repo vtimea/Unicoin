@@ -252,7 +252,6 @@ public class HomeActivity extends AppCompatActivity implements TransactionTypeFr
         addIncomeFragment.show(fm, "dialog_add_income");
     }
 
-    //Hosszú klikkre törli a tranzakciót
     @Override
     public boolean onItemLongClicked(int position) {
         update();

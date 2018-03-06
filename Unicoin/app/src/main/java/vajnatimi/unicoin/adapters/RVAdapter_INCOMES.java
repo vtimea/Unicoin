@@ -1,5 +1,8 @@
 package vajnatimi.unicoin.adapters;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -21,12 +25,18 @@ import vajnatimi.unicoin.model.Transaction2;
 public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.TransactionViewHolder>{
     private static final int NUM_OF_ITEMS_TO_SHOW = 10;
     private static List<Transaction2> transactions = new ArrayList<>();
+    Context context;
+
+    public interface OnItemLongClickListener {
+        public boolean onItemLongClicked(int position);
+    }
 
     public static class TransactionViewHolder extends RecyclerView.ViewHolder{
         CardView cv;
         TextView tvTransactionName;
         TextView tvTransactionDate;
         TextView tvTransactionAmount;
+        View view;
 
         public TransactionViewHolder(View itemView) {
             super(itemView);
@@ -34,10 +44,12 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
             tvTransactionName = (TextView)itemView.findViewById(R.id.tvTransactionName);
             tvTransactionDate = (TextView)itemView.findViewById(R.id.tvTransactionDate);
             tvTransactionAmount = (TextView)itemView.findViewById(R.id.tvTransactionAmount);
+            view = itemView;
         }
     }
 
-    public RVAdapter_INCOMES(){
+    public RVAdapter_INCOMES(Context context){
+        this.context = context;
         //update();
     }
 
@@ -49,13 +61,50 @@ public class RVAdapter_INCOMES extends RecyclerView.Adapter<RVAdapter_INCOMES.Tr
     }
 
     @Override
-    public void onBindViewHolder(TransactionViewHolder holder, int position) {
+    public void onBindViewHolder(TransactionViewHolder holder, final int position) {
         holder.tvTransactionName.setText(transactions.get(position).getName());
         holder.tvTransactionDate.setText(transactions.get(position).getDateString());
 
         int amount = transactions.get(position).getAmount();
         String formattedAmount = String.format("%,d", amount);
         holder.tvTransactionAmount.setText(formattedAmount);
+
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Action")
+                        .setItems(R.array.edit_or_delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(which == 0){
+                                    Toast.makeText(context, "EDIT!", Toast.LENGTH_SHORT).show();
+                                } else if(which == 1){
+                                    //Delete
+                                    Transaction2 toBeDeleted = transactions.get(position);
+                                    List<Transaction2> trs = Transaction2.listAll(Transaction2.class);
+                                    for(int i = 0; i < trs.size(); ++i){
+                                        Transaction2 temp = trs.get(i);
+                                        if(temp.getName().equals(toBeDeleted.getName()) &&
+                                                temp.getAmount() == toBeDeleted.getAmount() &&
+                                                temp.getCategory() == toBeDeleted.getCategory() &&
+                                                temp.getRecurr() == toBeDeleted.getRecurr() &&
+                                                temp.getDate().compareTo(toBeDeleted.getDate()) == 0){
+                                            temp.delete();
+                                            break;
+                                        }
+                                    }
+
+                                    ((RVAdapter_INCOMES.OnItemLongClickListener) context).onItemLongClicked(position);
+                                }
+                            }
+                        });
+                builder.create();
+                builder.show();
+
+                return true;
+            }
+        });
     }
 
     @Override

@@ -22,10 +22,11 @@ import android.widget.Toast;
 
 import vajnatimi.unicoin.R;
 import vajnatimi.unicoin.TransactionListener;
+import vajnatimi.unicoin.adapters.RVAdapter_EXPENSES;
 import vajnatimi.unicoin.fragments.SlidePageAllTrsFragment;
 import vajnatimi.unicoin.fragments.SlidePageRecurrFragment;
 
-public class ExpensesActivity extends AppCompatActivity implements TransactionListener{
+public class ExpensesActivity extends AppCompatActivity implements TransactionListener, RVAdapter_EXPENSES.OnItemLongClickListener{
     private static final int NUM_PAGES = 2;
 
     private ViewPager viewPager;
@@ -129,6 +130,12 @@ public class ExpensesActivity extends AppCompatActivity implements TransactionLi
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        update();
+        return true;
     }
 
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
