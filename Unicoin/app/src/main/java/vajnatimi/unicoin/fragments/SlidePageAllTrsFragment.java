@@ -202,9 +202,13 @@ public class SlidePageAllTrsFragment extends Fragment implements AdapterView.OnI
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spYear.setAdapter(adapter);
 
+        //If there are no transactions left, updates the rv,
+        //empties the month spinner, updates the pie chart
         if(spYear.getSelectedItem() == null){
             spMonth.setAdapter(null);
             recyclerView.getAdapter().notifyDataSetChanged();
+            chart.setData(null);
+            chart.invalidate();
             return;
         }
 
